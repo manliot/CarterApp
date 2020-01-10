@@ -1,7 +1,7 @@
 import React,{Component} from 'react'
 import {View,Text,StyleSheet,Image,Button,Navigator,TouchableHighlight} from 'react-native'
 
-let deben=100;
+let deben=1000;
 let debes=200;
 let cartera=300;
 

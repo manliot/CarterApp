@@ -8,6 +8,7 @@ import {
     ImageBackground,
     StyleSheet,TextInput
 }from 'react-native'
+
 let user
 let pass
 class LoginView extends Component{
