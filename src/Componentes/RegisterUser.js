@@ -1,5 +1,18 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, TextInput, ImageBackground, TouchableHighlight } from 'react-native';
+import { Text, StyleSheet, Alert ,View, TextInput, ImageBackground, TouchableHighlight } from 'react-native';
+import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
+
+const db = openDatabase({
+    name: 'posqlitExmple.db',
+    createFromLocation: '~www/sqlitExmple.db'
+},
+    (good) => { //in case of success print in the Console
+        console.log('OpenMensaje', good)
+    },
+    (err) => { // in case of error print in the Console
+        console.log('errorMensaje', err)
+    }
+);
 
 class RegisterUser extends Component {
     constructor() {
@@ -10,16 +23,23 @@ class RegisterUser extends Component {
             Age: '',
             UserName: '',
             Password: '',
-           
+            
         }
+
     }
-   
- 
+    componentDidMount() {
+        const { navigation } = this.props;
+        const DataBase = JSON.stringify(navigation.getParam('param', 'default value'));
+        this.setState({ bd: DataBase })
+    }
+
     render() {
+
         return (
             <ImageBackground style={styles.container} source={{ uri: 'http://appandabout.es/wp-content/uploads/2014/04/fondo-degradado.jpg' }}>
                 <View style={styles.container} >
                     <Text style={styles.title}> Please, Complete all the information to a success register   </Text>
+                   
                     <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Name' onChangeText={(text) => this.setState({ Name: text })} />
                     <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='LastName' onChangeText={(text) => this.setState({ LastName: text })} />
                     <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Age' onChangeText={(text) => this.setState({ Age: text })} />
@@ -27,7 +47,7 @@ class RegisterUser extends Component {
                     <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Password' onChangeText={(text) => this.setState({ Password: text })} />
 
                     <TouchableHighlight onPress={(this.onRegister.bind(this))} style={styles.button}>
-                        <Text style={styles.textButton}> Log in </Text>
+                        <Text style={styles.textButton}> Register </Text>
                     </TouchableHighlight>
                 </View>
             </ImageBackground>
@@ -35,12 +55,41 @@ class RegisterUser extends Component {
         );
 
     }
+
     onRegister() {
         const { Name } = this.state;
         const { LastName } = this.state;
         const { Age } = this.state;
         const { UserName } = this.state;
         const { Password } = this.state;
+        if(Name=='' || LastName=='' || Age==''||UserName==''||Password==''){
+            Alert.alert('','Please, Complete all the Information')
+        }else{
+            db.transaction(tx => {
+                tx.executeSql(
+                    'INSERT INTO Usuario (Usuario, Contraseña, Nombre, Apellido, Edad) VALUES (?,?,?,?,?)',
+                    [UserName, Password, Name, LastName, Age],
+                    (tx, res) => {
+                        console.log('aa')
+                        Console.log('Resultados',res.rowsAffected);
+                        if(res.rowsAffected>0){
+                            Alert.alert(
+                                'Success',
+                                'You are Registered Successfuly',
+                                [
+                                    {
+                                        text:'Ok'
+                                    }
+                                ]
+                            );
+                        }else{
+                            alert('Registration Failed');
+                        }
+                    }
+                )
+            });
+        }
+        
 
     }
 }

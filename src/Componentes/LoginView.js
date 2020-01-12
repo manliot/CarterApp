@@ -56,9 +56,24 @@ class LoginView extends Component {
         )
     }
     onRegister(){
+        console.log('click registro')
         this.props.navigation.navigate('RegisterUser',{param:this.state.dataBase}) // send the DataBase
+        //this.props.navigation.navigate('RegisterUser',{param:18})
+    }
+    mostrarListaDeUsuarios(){
+        db.transaction(tx=>{
+            tx.executeSql('SELECT * FROM  Usuario ',[],
+            (tx,res)=>{
+                
+                for(let i=0;i<res.rows.length;i++){
+                    console.log(i+'): '+ res.rows.item(i).Nombre)
+                }
+            }
+            )
+        })
     }
     onLogin() {// is called when 'Login' Button is pressed
+        console.log('click login')
         db.transaction((tx) => {
             const { usuario } = this.state;
             const { contraseña } = this.state;
@@ -94,7 +109,7 @@ class LoginView extends Component {
                             'Incorrect username and / or password',
                             [
                                 {
-                                    text: 'Aceptar'
+                                    text: 'Ok'
                                 }
                             ]
                         )
