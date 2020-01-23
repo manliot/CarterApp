@@ -1,7 +1,7 @@
 'use strict'
 //Imports
 import React, { Component } from 'react'
-import { View, Text, TouchableWithoutFeedback, TouchableHighlight, Alert, ImageBackground, StyleSheet, TextInput } from 'react-native' //Components used
+import { View, Text, TouchableWithoutFeedback, TouchableHighlight, Alert, ImageBackground, StyleSheet, TextInput, Dimensions } from 'react-native' //Components used
 import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
 
 //Opening DataBase  
@@ -26,9 +26,8 @@ class LoginView extends Component {
             usuario: '',
             contraseña: '',
             nombre: '',
-            dataBase:db
+            dataBase: db
         };
-
     }
     render() {
         return (
@@ -37,38 +36,50 @@ class LoginView extends Component {
                     <Text style={styles.title}> CarterAPP  </Text>
 
                     {/*  onChangeText: update the state with the text in the textInput*/}
-                    <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='UserName' onChangeText={(text) => this.setState({ usuario: text })} />                                       
-                    <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Password' onChangeText={(text) => this.setState({ contraseña: text })} />
+                    <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='UserName' onChangeText={(text) => this.setState({ usuario: text })} />
+                    <TextInput secureTextEntry={true} style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Password' onChangeText={(text) => this.setState({ contraseña: text })} />
 
 
                     <TouchableHighlight onPress={(this.onLogin.bind(this))} style={styles.button}>
                         <Text style={styles.textButton}> Log in </Text>
                     </TouchableHighlight>
-                    <TouchableWithoutFeedback onPress={(this.onRegister.bind(this))} style={styles.buttonRegister}>
+                    <TouchableWithoutFeedback  onPress={(this.onRegister.bind(this))} style={styles.buttonRegister}>
                         <Text style={styles.textButton}> you don't have account?. click here  </Text>
                     </TouchableWithoutFeedback>
 
-                    <Text style={styles.version}>V 1.0</Text>
-                    <Text style={styles.by} >By: Manlio Tejeda</Text>
                 </View>
-                
+                <View style={styles.versionView}>
+                    <Text style={styles.version}>V 1.0</Text>
+                    <Text style={styles.version} >By: Manlio Tejeda</Text>
+                </View>
             </ImageBackground>
         )
     }
-    onRegister(){
+    onRegister() {
         console.log('click registro')
-        this.props.navigation.navigate('RegisterUser',{param:this.state.dataBase}) // send the DataBase
-        //this.props.navigation.navigate('RegisterUser',{param:18})
+        this.props.navigation.navigate('RegisterUser', { param: this.state.dataBase }) // send the DataBase
     }
-    mostrarListaDeUsuarios(){
-        db.transaction(tx=>{
-            tx.executeSql('SELECT * FROM  Usuario ',[],
-            (tx,res)=>{
-                
-                for(let i=0;i<res.rows.length;i++){
-                    console.log(i+'): '+ res.rows.item(i).Nombre)
+    borrar() {// to delete a user 
+        db.transaction(tx => {
+            tx.executeSql('DELETE FROM  Usuario WHERE Usuario=?', ['Admin3'],
+                (tx, res) => {
+                    console.log('BO')
+                    for (let i = 0; i < res.rows.length; i++) {
+                        console.log(i + '): ' + res.rows.item(i).Nombre)
+                    }
                 }
-            }
+            )
+        })
+    }
+    Mostrarlista() {//to see all the users
+        db.transaction(tx => {
+            tx.executeSql('SELECT * FROM  Usuario ', [],
+                (tx, res) => {
+                    console.log('BO')
+                    for (let i = 0; i < res.rows.length; i++) {
+                        console.log(i + '): ' + res.rows.item(i).Usuario)
+                    }
+                }
             )
         })
     }
@@ -78,17 +89,14 @@ class LoginView extends Component {
             const { usuario } = this.state;
             const { contraseña } = this.state;
 
-
             //Query 'SELECT * FROM Usuario WHERE Usuario = ? and Contraseña=?'
-            tx.executeSql('SELECT * FROM Usuario WHERE Usuario = ? and Contraseña=?', [usuario,contraseña], (tx, res) => {
+            tx.executeSql('SELECT * FROM Usuario WHERE Usuario = ? and Contraseña=?', [usuario, contraseña], (tx, res) => {
                 const len = res.rows.length;
-                console.log('items:', len);
-                
                 if (len == 1) { //In case of login success
                     const row = res.rows;
                     this.setState({ nombre: row.item(0).Nombre });
                     const { nombre } = this.state;
-                    console.log('Resultado del query: ', row.item(0));
+                    //console.log('Resultado del query: ', row.item(0));
                     Alert.alert(
                         `Wellcome ${nombre}`,
                         'Login Success',
@@ -120,27 +128,25 @@ class LoginView extends Component {
 
     }
 
-    Aceptar() {
+
+    Aceptar() {// go to Lista de prestamos
         console.log('Login acep')
-
-        this.props.navigation.navigate('Home')
+        const { usuario } = this.state;
+        this.props.navigation.navigate('Home', { usuario: usuario })
     }
-    cancelar() {
-
+    cancelar() {//cancel
         console.log('Login cancelado')
     }
 }
-
-
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     title: {
-        marginTop: 160,
+        marginTop: 180,
         fontSize: 50,
         color: 'white',
         fontWeight: 'bold'
@@ -151,7 +157,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 70,
+        marginTop: 90,
         marginBottom: 10,
         borderRadius: 8,
         borderWidth: 1
@@ -164,33 +170,26 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     textButton: {
-        color:'#F5F5DC',
-    },
-    usYpas: {
-        fontSize: 16,
-        marginTop: 30,
-        color: 'white'
+        color: '#F5F5DC',
     },
     textIn: {
-        marginTop: 45,
+        marginTop: 60,
         width: 270,
         height: 40,
         borderBottomWidth: 2,
         color: 'white',
-        borderBottomColor :'white'       
+        borderBottomColor: 'white'
+    },
+    versionView: {
+        flex: 0.08,
+        alignItems: 'flex-end',
+        justifyContent: 'flex-end',
+        width: Dimensions.get('window').width
     },
     version: {
-        marginLeft:380,
-        marginTop: 188,
         fontSize: 11,
         color: 'white',
-
     },
-    by:{   
-        marginLeft:300,
-        fontSize: 11,
-        color: 'white',
-    }
 })
 //export default LoginView;
 module.exports = LoginView;
