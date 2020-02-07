@@ -1,4 +1,4 @@
-# Learning-React-native
+# Learning-React-native (Cart
 Objetivo:
 
 	1.Crear una aplicacion que permita el control de las personas que te deben y a las que debes. 
