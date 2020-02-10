@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        marginTop: 180,
+        marginTop:(Dimensions.get('window').width *220)/1560,
         fontSize: 50,
         color: 'white',
         fontWeight: 'bold'

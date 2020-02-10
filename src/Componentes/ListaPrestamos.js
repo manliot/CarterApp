@@ -19,21 +19,16 @@ import InfoGeneral from './InfoGeneral'
 class listaPrestamos extends Component {
     constructor() {
         super()
-
         this.state = {
             usuario: '',
             FlatListItems: [],
         }
 
     }
-
     componentDidMount() {
         this.getListaPrestamos();
-
     }
-    componentWillMount() {
-        this.getListaPrestamos();
-    }
+  
     getListaPrestamos = () => {
         function ItemList(Id, Monto, Nombre, Concepto, Fecha) {
             this.Id = Id,
@@ -46,6 +41,7 @@ class listaPrestamos extends Component {
         const { params } = this.props.navigation.state;
         console.log(`El Usuario que hizo Login fue: ${params.usuario}`)
         this.setState({ usuario: params.usuario })
+        
         db.transaction(tx => {
             tx.executeSql('SELECT * FROM DebenList WHERE Usuario=?', [this.state.usuario],
                 (tx, res) => {
@@ -54,8 +50,9 @@ class listaPrestamos extends Component {
                     for (let i = 0; i < res.rows.length; ++i) {
                         //temp.push(res.rows.item(i));
                         let item = res.rows.item(i)
+                       
                         let tempItem = new ItemList(item.IDdeben, item.Monto, item.Nombre, item.Concepto, item.Fecha);
-                        console.log('sisaa: ' + tempItem.Fecha);
+                        
                         temp[i] = tempItem;
                     }
                     this.setState({
@@ -64,9 +61,9 @@ class listaPrestamos extends Component {
 
                 })
         })
-        console.log('flat' + this.state.FlatListItems)
+       
     };
-    comp
+    
     render() {
 
         return (
@@ -76,7 +73,7 @@ class listaPrestamos extends Component {
                 <View style={styles.container}>
                     <InfoGeneral style={styles.InfoGeneral} />
                     <View style={styles.Titulo}>
-                        <Text style={styles.tex}>Lista de los que te deben:</Text>
+                        <Text style={styles.tex}> Lista de los que te deben: </Text>
                     </View>
 
                     <View style={styles.lista}>
