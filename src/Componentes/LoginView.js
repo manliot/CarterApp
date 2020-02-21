@@ -31,19 +31,19 @@ class LoginView extends Component {
     }
     render() {
         return (
-            <ImageBackground style={styles.container} source={{ uri: 'http://appandabout.es/wp-content/uploads/2014/04/fondo-degradado.jpg' }}>
+            <View style={styles.container}>
                 <View style={styles.container} >
                     <Text style={styles.title}> CarterAPP  </Text>
 
                     {/*  onChangeText: update the state with the text in the textInput*/}
-                    <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='UserName' onChangeText={(text) => this.setState({ usuario: text })} />
-                    <TextInput secureTextEntry={true} style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Password' onChangeText={(text) => this.setState({ contraseña: text })} />
+                    <TextInput style={styles.textIn1} placeholderTextColor='grey' placeholder='UserName' onChangeText={(text) => this.setState({ usuario: text })} />
+                    <TextInput secureTextEntry={true} style={styles.textIn2} placeholderTextColor='grey' placeholder='Password' onChangeText={(text) => this.setState({ contraseña: text })} />
 
 
                     <TouchableHighlight onPress={(this.onLogin.bind(this))} style={styles.button}>
-                        <Text style={styles.textButton}> Log in </Text>
+                        <Text style={{ color: 'white' }}> Log in </Text>
                     </TouchableHighlight>
-                    <TouchableWithoutFeedback  onPress={(this.onRegister.bind(this))} style={styles.buttonRegister}>
+                    <TouchableWithoutFeedback onPress={(this.onRegister.bind(this))} style={styles.buttonRegister}>
                         <Text style={styles.textButton}> you don't have account?. click here  </Text>
                     </TouchableWithoutFeedback>
 
@@ -52,16 +52,17 @@ class LoginView extends Component {
                     <Text style={styles.version}>V 1.0</Text>
                     <Text style={styles.version} >By: Manlio Tejeda</Text>
                 </View>
-            </ImageBackground>
+            </View>
         )
     }
-    onRegister() {
+    onRegister() {//to register new users
         console.log('click registro')
         this.props.navigation.navigate('RegisterUser', { param: this.state.dataBase }) // send the DataBase
     }
     borrar() {// to delete a user 
         db.transaction(tx => {
-            tx.executeSql('DELETE FROM  Usuario WHERE Usuario=?', ['Admin3'],
+            console.log('borrar')
+            tx.executeSql('DELETE FROM  DebenList WHERE Usuario=?', ['Admin'],
                 (tx, res) => {
                     console.log('BO')
                     for (let i = 0; i < res.rows.length; i++) {
@@ -91,12 +92,19 @@ class LoginView extends Component {
 
             //Query 'SELECT * FROM Usuario WHERE Usuario = ? and Contraseña=?'
             tx.executeSql('SELECT * FROM Usuario WHERE Usuario = ? and Contraseña=?', [usuario, contraseña], (tx, res) => {
-                const len = res.rows.length;
+
+                const len = res.rows.length;//<-- 0 in case of no users register
                 if (len == 1) { //In case of login success
+
+                    //row Have the result of query (in a object)
                     const row = res.rows;
+
+                    // destructuration of object rew
                     this.setState({ nombre: row.item(0).Nombre });
                     const { nombre } = this.state;
+
                     //console.log('Resultado del query: ', row.item(0));
+
                     Alert.alert(
                         `Wellcome ${nombre}`,
                         'Login Success',
@@ -144,20 +152,21 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
+        backgroundColor: 'white'
     },
     title: {
-        marginTop:(Dimensions.get('window').width *220)/1560,
+        marginTop: (Dimensions.get('window').width * 350) / 1560,
         fontSize: 50,
-        color: 'white',
+        color: '#5564eb',
         fontWeight: 'bold'
     },
     button: {
         width: 150,
         height: 30,
-        backgroundColor: 'red',
+        backgroundColor: '#5564eb',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 90,
+        marginTop: 50,
         marginBottom: 10,
         borderRadius: 8,
         borderWidth: 1
@@ -170,15 +179,23 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     textButton: {
-        color: '#F5F5DC',
+        color: 'gray',
     },
-    textIn: {
+    textIn1: {
+        marginTop: (Dimensions.get('window').height * 120) / 720,
+        width: 270 ,
+        height: (Dimensions.get('window').height * 40) / 720,
+        borderBottomWidth: 2,
+        color: 'black',
+        borderBottomColor: 'grey'
+    },
+    textIn2: {
         marginTop: 60,
         width: 270,
         height: 40,
         borderBottomWidth: 2,
-        color: 'white',
-        borderBottomColor: 'white'
+        color: 'black',
+        borderBottomColor: 'grey'
     },
     versionView: {
         flex: 0.08,
@@ -188,7 +205,7 @@ const styles = StyleSheet.create({
     },
     version: {
         fontSize: 11,
-        color: 'white',
+        color: 'grey',
     },
 })
 //export default LoginView;

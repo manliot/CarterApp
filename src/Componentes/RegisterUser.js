@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Alert, View, TextInput, ImageBackground, TouchableHighlight,Dimensions } from 'react-native';
+import { Text, StyleSheet, Alert, View, TextInput, ScrollView, TouchableHighlight, Dimensions } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
 
 const db = openDatabase({
@@ -33,26 +33,28 @@ class RegisterUser extends Component {
 
     render() {
         return (
-            <ImageBackground style={styles.container} source={{ uri: 'http://appandabout.es/wp-content/uploads/2014/04/fondo-degradado.jpg' }}>
-                <View style={styles.container} >
 
+            <View style={styles.container} >
+                <ScrollView>
                     <View style={styles.body}>
 
+                        <Text style={styles.title}> Sing Up  </Text>
                         <Text style={styles.title2}> Please, Complete all the information to a success register   </Text>
 
-                        <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Name' onChangeText={(text) => this.setState({ Name: text })} />
-                        <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='LastName' onChangeText={(text) => this.setState({ LastName: text })} />
-                        <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Age' onChangeText={(text) => this.setState({ Age: text })} />
-                        <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='UserName' onChangeText={(text) => this.setState({ UserName: text })} />
-                        <TextInput secureTextEntry={true}  style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Password' onChangeText={(text) => this.setState({ Password: text })} />
+                        <TextInput style={styles.textIn1} placeholderTextColor='grey' placeholder='Name' onChangeText={(text) => this.setState({ Name: text })} />
+                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='LastName' onChangeText={(text) => this.setState({ LastName: text })} />
+                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='Age' onChangeText={(text) => this.setState({ Age: text })} />
+                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='UserName' onChangeText={(text) => this.setState({ UserName: text })} />
+                        <TextInput secureTextEntry={true} style={styles.textIn} placeholderTextColor='grey' placeholder='Password' onChangeText={(text) => this.setState({ Password: text })} />
 
                         <TouchableHighlight onPress={(this.onRegister.bind(this))} style={styles.button}>
                             <Text style={styles.textButton}> Register </Text>
                         </TouchableHighlight>
 
                     </View>
-                </View >
-            </ImageBackground >
+                </ScrollView>
+            </View >
+
 
         );
 
@@ -101,24 +103,39 @@ class RegisterUser extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
+        backgroundColor: 'white',
         flexDirection: 'column'
     },
 
     title2: {
         width: Dimensions.get('window').width,
-        marginTop: 10,
+        marginTop: 25,
         fontSize: 15,
-        color: 'white',
+        color: 'black',
 
     },
-    textIn: {
-        marginTop: 45,
+    title: {
+
+        marginTop: 25,
+        fontSize: 20,
+        color: 'black',
+
+    },
+    textIn1: {
+        marginTop: 20,
         width: 270,
         height: 40,
         borderBottomWidth: 2,
-        color: 'white',
-        borderBottomColor: 'white'
+        color: 'black',
+        borderBottomColor: 'black'
+    },
+    textIn: {
+        marginTop: 25,
+        width: 270,
+        height: 40,
+        borderBottomWidth: 2,
+        color: 'black',
+        borderBottomColor: 'black'
     },
     body: {
         flex: 1,
@@ -130,7 +147,7 @@ const styles = StyleSheet.create({
     button2: {
         width: 40,
         height: 40,
-        backgroundColor: 'red',
+        backgroundColor: '#5564eb',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 10,
@@ -140,10 +157,10 @@ const styles = StyleSheet.create({
     button: {
         width: 150,
         height: 30,
-        backgroundColor: 'red',
+        backgroundColor: '#5564eb',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 70,
+        marginTop: 35,
         marginBottom: 10,
         borderRadius: 8,
         borderWidth: 1

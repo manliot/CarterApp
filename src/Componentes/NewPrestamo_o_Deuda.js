@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, TextInput,ImageBackground,TouchableHighlight,Alert } from 'react-native';
+import { Text, StyleSheet, View, TextInput, ImageBackground, TouchableHighlight, Alert } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
 
 const db = openDatabase({
@@ -13,35 +13,43 @@ const db = openDatabase({
         console.log('errorMensaje', err)
     }
 );
-
-class AddNewDeuda extends Component {
+class AddNewPrestamo extends Component {
+    constructor() {
+        super()
+        this.state = {
+            Monto: '',
+            Nombre: '',
+            concepto: '',
+            usuario: '',
+            date: ''
+        }
+    }
     render() {
         return (
-            <ImageBackground style={styles.container} source={{ uri: 'http://appandabout.es/wp-content/uploads/2014/04/fondo-degradado.jpg' }}>
             <View style={styles.container}>
-                <Text>Nuevo Deuda</Text>
-                <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Monto' /*onChangeText={(text) => this.setState({ usuario: text })}*/ />
-                <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='Name Prestador' /*onChangeText={(text) => this.setState({ usuario: text })}*/ />
-                <TextInput style={styles.textIn} placeholderTextColor='#F5F5DC' placeholder='concepto' /* onChangeText={(text) => this.setState({ usuario: text })}*/ />
+                
+                <Text style={styles.title}> {this.props.scrn} </Text>
+                <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='Monto' onChangeText={(text) => this.setState({ Monto: text })} />
+                <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder={this.props.Txt} onChangeText={(text) => this.setState({ Nombre: text })} />
+                <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='concepto' onChangeText={(text) => this.setState({ concepto: text })} />
                 <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
                     <Text style={styles.textButton}> Add </Text>
                 </TouchableHighlight>
             </View>
-        </ImageBackground>
+
 
         );
     }
+
     onAdd() {
-        var date = new Date().getDate(); //Current Date
-        var month = new Date().getMonth() + 1; //Current Month
-        var year = new Date().getFullYear(); //Current Year
-        var hours = new Date().getHours(); //Current Hours
-        var min = new Date().getMinutes(); //Current Minutes
-        var sec = new Date().getSeconds(); //Current Seconds
+        const date = new Date().getDate(); //Current Date
+        const month = new Date().getMonth() + 1; //Current Month
+        const year = new Date().getFullYear(); //Current Year
         this.setState({
             //Setting the value of the date time
             date:
-                date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
+                //date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
+                date + '/' + month + '/' + year,
         });
 
         const { Monto } = this.state
@@ -49,14 +57,17 @@ class AddNewDeuda extends Component {
         const { concepto } = this.state
 
         const { params } = this.props.navigation.state;
-        console.log(params.usuario)
-        this.setState({ usuario: params.usuario })
-        //INSERT INTO DeboList (Monto,Nombre,Concepto,Fecha,Usuario) VALUES(1000,"alguien","uBER","20/1/20","ADMIN")
-        if (Monto == '') {
 
+        this.setState({ usuario: params.usuario })
+        //INSERT INTO DebenList (Monto,Nombre,Concepto,Fecha,Usuario) VALUES(1000,"alguien","uBER","20/1/20","ADMIN")
+
+        if (Monto == '' || isNaN(Monto)) {
+            alert('Recuerde que el campo monto debe estar lleno y ser un valor numerico');
         } else {
+            console.log(params.usuario)
             db.transaction(tx => {
-                tx.executeSql('INSERT INTO DebenList (Monto,Nombre,Concepto,Fecha,Usuario) VALUES(?,?,?,?,?)',
+                console.log(this.props.TypeList + params.usuario)
+                tx.executeSql(`INSERT INTO ${this.props.TypeList} (Monto,Nombre,Concepto,Fecha,Usuario) VALUES(?,?,?,?,?)`,
                     [Monto, Nombre, concepto, this.state.date, this.state.usuario], (tx, results) => {
                         console.log('Results', results.rowsAffected);
                         if (results.rowsAffected > 0) {
@@ -80,18 +91,31 @@ class AddNewDeuda extends Component {
         }
     }
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: 'white',
+    },
+    title: {
+
+        marginTop: 25,
+        fontSize: 20,
+        color: 'black',
+
+    },
+    header: {
+        flex: 0.07,
+        justifyContent: 'flex-end',
+        backgroundColor: '#f05855'
+
     },
     button: {
         width: 150,
         height: 30,
-        backgroundColor: 'red',
+        backgroundColor: '#5564eb',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 70,
@@ -102,14 +126,24 @@ const styles = StyleSheet.create({
     textButton: {
         color: '#F5F5DC',
     },
+    button2: {
+        width: 40,
+        height: 40,
+        backgroundColor: '#5564eb',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 10,
+        borderRadius: 8,
+        borderWidth: 1
+    },
     textIn: {
         marginTop: 45,
         width: 270,
         height: 40,
         borderBottomWidth: 2,
-        color: 'white',
-        borderBottomColor: 'white'
+        color: 'black',
+        borderBottomColor: 'grey'
     },
 })
 
-module.exports = AddNewDeuda;
+module.exports = AddNewPrestamo;

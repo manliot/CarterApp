@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { View, Text } from 'react-native'
 import { createAppContainer, } from 'react-navigation';
 import { createStackNavigator, } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer'
@@ -10,17 +10,24 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Login from './src/Componentes/LoginView'
 import RegisterUser from './src/Componentes/RegisterUser'
 
-import NewDeuda from './src/Componentes/AddNewDeuda'
-import NewPrestamo from './src/Componentes/AddNewPrestamo'
 
-import ListaDeudas from './src/Componentes/ListaDeudas'
-import ListaPrestamos from './src/Componentes/ListaPrestamos'
+import NewPrestamo_o_Deuda from './src/Componentes/NewPrestamo_o_Deuda'
 
+
+import Componente_Lista from './src/Componentes/Componente_Lista'
+
+//this aplication have this structure:
+//
+//                                   
+//StackNavigator-> DrawerNaviagtor->StackNavigator->tabNavigator
 
 //Scenes
+
+//Important: in this part only use a View call Lista de Prestamos but with differents params
+//TypeList is the name of Table to search in the 2 cases ( DebenList or DebesList)
 const AppTabNavigator = createBottomTabNavigator({
   ListaPrestamos: {
-    screen: ListaPrestamos,
+    screen: (props) => <Componente_Lista {...props} TypeList='DebenList' Txt='Los que te deben' />,
     navigationOptions: {
       tabBarLabel: "Home Page",
       tabBarIcon: ({ tintColor }) => (
@@ -30,7 +37,7 @@ const AppTabNavigator = createBottomTabNavigator({
   },
 
   ListaDeudas: {
-    screen: ListaDeudas,
+    screen: (props) => <Componente_Lista {...props} TypeList='DeboList' Txt='A los que les debes' />,
     navigationOptions: {
       tabBarLabel: "Home Page",
       tabBarIcon: ({ tintColor }) => (
@@ -40,21 +47,28 @@ const AppTabNavigator = createBottomTabNavigator({
   },
 }, {
   navigationOptions: ({ navigation }) => {
-    const { routeName } = navigation.state.routes
-
+    /*const { routeName } = navigation.state.routes
     [navigation.state.index];
     if (routeName == 'ListaPrestamos') {
       return {
-        headerTitle: 'Lista de Prestamos'
+        headerTitle: 'Lista de Prestamos',
+        headerStyle: { backgroundColor: '#5564eb' },
+        headerTintColor: '#ffffff',
       }
     } else {
       if (routeName == 'ListaDeudas') {
         return {
-          headerTitle: 'Lista de Deudas'
+          headerTitle: 'Lista de Deudas',
+          headerStyle: { backgroundColor: '#5564eb' },
+          headerTintColor: '#ffffff',
         }
       }
+    }*/
+    return {
+      headerTitle: 'CarterAPP',
+      headerStyle: { backgroundColor: '#5564eb' },
+      headerTintColor: '#ffffff',
     }
-
   }
 })
 const AppStackNavigator = createStackNavigator({
@@ -64,11 +78,8 @@ const AppStackNavigator = createStackNavigator({
 }, {
   defaultNavigationOptions: ({ navigation }) => {
     return {
-
       headerLeft: () => (
         <Icon style={{ paddingLeft: 10 }} onPress={() => navigation.openDrawer()} name='menuunfold' color='black' size={25} />
-
-
       )
     }
   }
@@ -93,10 +104,20 @@ const AppDraweNavigator = createDrawerNavigator({
     screen: AppStackNavigator,
   },
   NewPrestamo: {
-    screen: NewPrestamo
+    screen: (props) => <NewPrestamo_o_Deuda {...props} TypeList='DebenList' Txt='Nombre del Deudor' scrn='Nuevo Prestamos' />,
+    navigationOptions: {
+      title: 'Nuevo Prestamo',
+      headerStyle: { backgroundColor: '#5564eb' },
+      headerTintColor: '#ffffff',
+    },
   },
   NewDeuda: {
-    screen: NewDeuda
+    screen: (props) => <NewPrestamo_o_Deuda {...props} TypeList='DeboList' Txt='Nombre del Prestador' scrn='Nueva Deuda' />,
+    navigationOptions: {
+      title: 'Nueva deuda',
+      headerStyle: { backgroundColor: '#5564eb' },
+      headerTintColor: '#ffffff',
+    },
   },
   exit: {
     screen: salir
@@ -105,7 +126,7 @@ const AppDraweNavigator = createDrawerNavigator({
 
 
 
-const AppSwitchNavigator = createStackNavigator({
+const AppStackNavigator1 = createStackNavigator({
   Login: {
     screen: Login,
     navigationOptions: { headerShown: false }
@@ -118,8 +139,8 @@ const AppSwitchNavigator = createStackNavigator({
   RegisterUser: {
     screen: RegisterUser,
     navigationOptions: {
-      title: 'Sing Up',
-      headerStyle: { backgroundColor: '#f05555' },
+      title: '',
+      headerStyle: { backgroundColor: '#5564eb' },
       headerTintColor: '#ffffff',
     },
   },
@@ -127,25 +148,12 @@ const AppSwitchNavigator = createStackNavigator({
 })
 
 
-const AppContainer = createAppContainer(AppSwitchNavigator);
+const AppContainer = createAppContainer(AppStackNavigator1);
 
 export default class App extends React.Component {
   render() {
     return <AppContainer />
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'column'
-  },
-  color: {
-    backgroundColor: 'blue'
-  }
-})
-
-
 
 
