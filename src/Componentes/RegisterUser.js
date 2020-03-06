@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Alert, View, TextInput, ScrollView, TouchableHighlight, Dimensions } from 'react-native';
+import { Text, StyleSheet, Alert, View, TextInput, ScrollView, TouchableHighlight, Dimensions, KeyboardAvoidingView } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
 
 const db = openDatabase({
@@ -30,34 +30,25 @@ class RegisterUser extends Component {
         const DataBase = JSON.stringify(navigation.getParam('param', 'default value'));
         this.setState({ bd: DataBase })
     }
-
     render() {
         return (
-
             <View style={styles.container} >
                 <ScrollView>
                     <View style={styles.body}>
-
                         <Text style={styles.title}> Sing Up  </Text>
                         <Text style={styles.title2}> Please, Complete all the information to a success register   </Text>
-
-                        <TextInput style={styles.textIn1} placeholderTextColor='grey' placeholder='Name' onChangeText={(text) => this.setState({ Name: text })} />
-                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='LastName' onChangeText={(text) => this.setState({ LastName: text })} />
-                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='Age' onChangeText={(text) => this.setState({ Age: text })} />
-                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='UserName' onChangeText={(text) => this.setState({ UserName: text })} />
-                        <TextInput secureTextEntry={true} style={styles.textIn} placeholderTextColor='grey' placeholder='Password' onChangeText={(text) => this.setState({ Password: text })} />
-
+                        <TextInput style={styles.textIn1} autoFocus={true} placeholderTextColor='grey' placeholder='Name' onChangeText={(text) => this.setState({ Name: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
+                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='LastName' onChangeText={(text) => this.setState({ LastName: text })} ref='_2' onSubmitEditing={(event) => { this.refs._3.focus(); }} />
+                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='Age' onChangeText={(text) => this.setState({ Age: text })} onSubmitEditing={(event) => { this.refs._4.focus(); }} ref='_3'/>
+                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='UserName' onChangeText={(text) => this.setState({ UserName: text })} onSubmitEditing={(event) => { this.refs._5.focus(); }}ref='_4' />
+                        <TextInput secureTextEntry={true} style={styles.textIn} placeholderTextColor='grey' placeholder='Password' onChangeText={(text) => this.setState({ Password: text })} ref='_5'/>
                         <TouchableHighlight onPress={(this.onRegister.bind(this))} style={styles.button}>
                             <Text style={styles.textButton}> Register </Text>
                         </TouchableHighlight>
-
                     </View>
                 </ScrollView>
             </View >
-
-
         );
-
     }
     onExit() {
         this.props.navigation.navigate('Login')
@@ -76,7 +67,6 @@ class RegisterUser extends Component {
                     'INSERT INTO Usuario (Usuario, Contraseña, Nombre, Apellido, Edad) VALUES (?,?,?,?,?)',
                     [UserName, Password, Name, LastName, Age],
                     (tx, res) => {
-
                         console.log('QUERY', res)
                         if (res.rowsAffected > 0) {
                             Alert.alert(
@@ -96,30 +86,24 @@ class RegisterUser extends Component {
                 )
             });
         }
-
-
     }
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#ecfcff',
         flexDirection: 'column'
     },
-
     title2: {
         width: Dimensions.get('window').width,
         marginTop: 25,
         fontSize: 15,
         color: 'black',
-
     },
     title: {
-
         marginTop: 25,
         fontSize: 20,
         color: 'black',
-
     },
     textIn1: {
         marginTop: 20,
@@ -141,23 +125,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-
-    },
-
-    button2: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#5564eb',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 10,
-        borderRadius: 8,
-        borderWidth: 1
     },
     button: {
         width: 150,
         height: 30,
-        backgroundColor: '#5564eb',
+        backgroundColor: '#3e64ff',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 35,

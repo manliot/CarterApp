@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, TextInput, ImageBackground, TouchableHighlight, Alert } from 'react-native';
+import { Text, StyleSheet, ScrollView, TextInput, Dimensions, TouchableHighlight, Alert, } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
+import { Header, Left, Right, Body, Title, Icon, Container, } from 'native-base'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+
+
 
 const db = openDatabase({
     name: 'posqlitExmple.db',
@@ -26,16 +30,34 @@ class AddNewPrestamo extends Component {
     }
     render() {
         return (
-            <View style={styles.container}>
-                
-                <Text style={styles.title}> {this.props.scrn} </Text>
-                <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='Monto' onChangeText={(text) => this.setState({ Monto: text })} />
-                <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder={this.props.Txt} onChangeText={(text) => this.setState({ Nombre: text })} />
-                <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='concepto' onChangeText={(text) => this.setState({ concepto: text })} />
-                <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
-                    <Text style={styles.textButton}> Add </Text>
-                </TouchableHighlight>
-            </View>
+            <Container>
+                <Header style={{ backgroundColor: '#5564eb', width: Dimensions.get('window').width, }}>
+                    <Left>
+                        <AntDesign name="menuunfold" style={{ paddingLeft: 10 }} onPress={() => this.props.navigation.openDrawer()} color='white' size={25} />
+                    </Left>
+                    <Body>
+                        <Title style={{ color: 'white', fontSize: 20, }}> CarterApp</Title>
+                    </Body>
+                    <Right />
+
+                </Header>
+
+
+                <ScrollView>
+                    <Body>
+                        <Text style={styles.title}> {this.props.scrn} </Text>
+                        <TextInput style={styles.textIn} autoFocus={true} keyboardType='numeric' placeholderTextColor='grey' placeholder='Monto' onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
+                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder={this.props.Txt} onChangeText={(text) => this.setState({ Nombre: text })} ref='_2' onSubmitEditing={(event) => { this.refs._3.focus(); }}/>
+                        <TextInput style={styles.textInConcepto} words={true} multiline={true} placeholderTextColor='grey' placeholder='concepto' onChangeText={(text) => this.setState({ concepto: text })} ref='_3' />
+                        <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
+                            <Text style={styles.textButton}> Add </Text>
+                        </TouchableHighlight>
+                    </Body>
+                </ScrollView>
+
+
+
+            </Container>
 
 
         );
@@ -100,17 +122,24 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     title: {
-
         marginTop: 25,
         fontSize: 20,
         color: 'black',
-
     },
     header: {
-        flex: 0.07,
-        justifyContent: 'flex-end',
-        backgroundColor: '#f05855'
-
+        flex: 0.1,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        backgroundColor: '#5564eb',
+        marginTop: 0,
+        width: Dimensions.get('window').width,
+    },
+    body: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        backgroundColor: 'white',
     },
     button: {
         width: 150,
@@ -126,20 +155,19 @@ const styles = StyleSheet.create({
     textButton: {
         color: '#F5F5DC',
     },
-    button2: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#5564eb',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 10,
-        borderRadius: 8,
-        borderWidth: 1
-    },
+
     textIn: {
         marginTop: 45,
         width: 270,
         height: 40,
+        borderBottomWidth: 2,
+        color: 'black',
+        borderBottomColor: 'grey'
+    },
+    textInConcepto: {
+        marginTop: 45,
+        width: 270,
+        height: 100,
         borderBottomWidth: 2,
         color: 'black',
         borderBottomColor: 'grey'

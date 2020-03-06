@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { View, Text, StyleSheet, Image, Button, Navigator, TouchableHighlight } from 'react-native'
+import React, { Component, memo } from 'react'
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions, Image } from 'react-native'
 import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
-
+import { Header } from 'native-base'
 //opening database
 const db = openDatabase({
   name: 'posqlitExmple.db',
@@ -15,7 +15,7 @@ const db = openDatabase({
   }
 );
 
-class PrincipalView extends Component {
+class Componente_Lista extends Component {
   constructor() {
     super()
     this.state = {
@@ -24,19 +24,19 @@ class PrincipalView extends Component {
       TotalDebes: 0,
       TotalCartera: 0,
     }
-
   }
-  componentDidMount() {
+  getInfo() {
+    console.log('obteniendo info...')
     //llenando la info general en base a la base de datos
     this.getTotalMonto('SELECT Monto FROM DebenList WHERE Usuario=?', 'deben');
     this.getTotalMonto('SELECT Monto FROM DeboList WHERE Usuario=?', 'debes');
   }
-
+  componentDidMount() {
+    this.getInfo()
+  }
   getTotalMonto = (querytxt, type) => {
     const { params } = this.props.nav;
-
     this.setState({ usuario: params.usuario })
-
     db.transaction(tx => {
       tx.executeSql(querytxt, [this.state.usuario],
         (tx, res) => {
@@ -54,34 +54,57 @@ class PrincipalView extends Component {
     })
   };
 
-
   render() {
+    const { params } = this.props.nav;
     return (
-      <View style={styles.container}>
-        <Text style={styles.tex}>  Te deben: ${this.state.TotalDeben} (COP)</Text>
-        <Text style={styles.tex}> Debes: ${this.state.TotalDebes} (COP)</Text>
-        <Text style={styles.tex}> Cartera: ${this.state.TotalCartera} (COP)</Text>
+      <View style={{ backgroundColor: '#6281ff', justifyContent: 'center' }}>
+        <View style={styles.BienvenidoView}>
+          <Image source={{ uri: 'https://yt3.ggpht.com/a/AGF-l7_G980npHDLK-MsvflU7J8aluAWBb0_S13C8Q=s900-c-k-c0xffffffff-no-rj-mo' }}
+            style={{ height: 65, width: 65, borderRadius: 60, }} />
+          <View>
+            <Text style={styles.texb}> Bienvenido {params.Nombre} !</Text>
+            <Text style={styles.texu}> Su ultimo ingreso fue: 4/1/2020</Text>
+          </View>
+
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.tex}>  Te deben: ${this.state.TotalDeben} </Text>
+          <Text style={styles.tex}> Debes: ${this.state.TotalDebes} </Text>
+          <Text style={styles.tex}> Cartera: ${this.state.TotalCartera} </Text>
+        </View>
       </View>
+
     )
   }
 }
-
+const height = Dimensions.get('window').height
 const styles = StyleSheet.create({
   container: {
-    flex: 0.7,
-    justifyContent: 'center',
+    flex: 2,
+    height: (height / 5),
     alignItems: 'center',
     flexDirection: 'column',
-    backgroundColor: '#6470dc'
+    marginTop: 30
+  },
+  BienvenidoView: {
+    flexDirection: 'row',
+    flex: 0.5,
+    marginLeft: 30,
+    marginTop: 30,
   },
   tex: {
     fontSize: 18,
     color: 'white'
   },
-  tex2: {
+  texb: {
     fontSize: 14,
     color: 'white'
   },
+  texu: {
+    fontSize: 14,
+    color: '#cccccc'
+  },
 })
 
-export default PrincipalView
+export default React.memo(Componente_Lista)
+
