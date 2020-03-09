@@ -1,5 +1,5 @@
 import React, { Component, memo } from 'react'
-import { View, Text, StyleSheet, ActivityIndicator, Dimensions, Image } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions, Image, ImageBackground } from 'react-native'
 import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
 import { Header } from 'native-base'
 //opening database
@@ -14,7 +14,9 @@ const db = openDatabase({
     console.log('errorMensaje', err)
   }
 );
-
+const height = Dimensions.get('window').height
+const width = Dimensions.get('window').width
+let heightApropiada = height / 3.8;
 class Componente_Lista extends Component {
   constructor() {
     super()
@@ -33,6 +35,8 @@ class Componente_Lista extends Component {
   }
   componentDidMount() {
     this.getInfo()
+    const max = Math.max(this.state.TotalDeben.length, this.state.TotalDebes.length, this.state.TotalCartera.length)
+    heightApropiada = parseFloat(max / 6) * parseFloat(height / 3.8)
   }
   getTotalMonto = (querytxt, type) => {
     const { params } = this.props.nav;
@@ -57,44 +61,50 @@ class Componente_Lista extends Component {
   render() {
     const { params } = this.props.nav;
     return (
-      <View style={{ backgroundColor: '#6281ff', justifyContent: 'center' }}>
+      <View style={{ flex: 1, height: (height / 2.5), backgroundColor: '#6281ff', justifyContent: 'center', alignItems: 'center' }}>
+
+        <View style={styles.circuloView}>
+          <View style={styles.TotalView}>
+            <Text style={styles.tex} ref='t1' >  Te deben: ${this.state.TotalDeben} </Text>
+            <Text style={styles.tex}> Debes: ${this.state.TotalDebes} </Text>
+            <Text style={styles.tex}> Cartera: ${this.state.TotalCartera}  </Text>
+          </View>
+        </View>
         <View style={styles.BienvenidoView}>
           <Image source={{ uri: 'https://yt3.ggpht.com/a/AGF-l7_G980npHDLK-MsvflU7J8aluAWBb0_S13C8Q=s900-c-k-c0xffffffff-no-rj-mo' }}
-            style={{ height: 65, width: 65, borderRadius: 60, }} />
-          <View>
+            style={{ height: 60, width: 60, borderRadius: 60, }} />
+          <View style={{ justifyContent: 'center' }}>
             <Text style={styles.texb}> Bienvenido {params.Nombre} !</Text>
-            <Text style={styles.texu}> Su ultimo ingreso fue: 4/1/2020</Text>
+            <Text style={styles.texu}> Su ultimo ingreso fue: 4/1/2020 </Text>
           </View>
 
+
         </View>
-        <View style={styles.container}>
-          <Text style={styles.tex}>  Te deben: ${this.state.TotalDeben} </Text>
-          <Text style={styles.tex}> Debes: ${this.state.TotalDebes} </Text>
-          <Text style={styles.tex}> Cartera: ${this.state.TotalCartera} </Text>
-        </View>
+
+
       </View>
 
     )
   }
+  getHeight() {
+
+  }
 }
-const height = Dimensions.get('window').height
+
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 2,
-    height: (height / 5),
+  TotalView: {
     alignItems: 'center',
-    flexDirection: 'column',
-    marginTop: 30
   },
   BienvenidoView: {
     flexDirection: 'row',
-    flex: 0.5,
-    marginLeft: 30,
-    marginTop: 30,
+    marginTop: 10,
   },
   tex: {
     fontSize: 18,
-    color: 'white'
+    color: 'white',
+    //backgroundColor: 'yellow'
   },
   texb: {
     fontSize: 14,
@@ -104,6 +114,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#cccccc'
   },
+  circuloView: {
+    marginTop: 10,
+    backgroundColor: '#5173FF',
+    borderWidth: 3,
+    borderRadius: 100,
+    borderColor: '#ffe061',
+    height:height / 3.9,
+    justifyContent: 'center', alignItems: 'center'
+  }
 })
 
 export default React.memo(Componente_Lista)

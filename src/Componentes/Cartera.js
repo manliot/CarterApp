@@ -22,8 +22,8 @@ export default class Cartera extends Component {
             style={{ height: 60, width: 60, borderRadius: 80}} />
             
                 <Image source={{ uri: 'https://image.freepik.com/vector-gratis/ilustracion-colorida-programador-trabajando_23-2148281409.jpg' }}
-            style={{ height: h/2, width: w, borderRadius: ((h/w)*350)/(1560/720), }} />
-            <Text> Working...</Text>
+            style={{ height: w, width: w, borderRadius: ((h/w)*350)/(1560/720), }} />
+            <Text> We are working with LOVE...</Text>
             </View>
         )
     }

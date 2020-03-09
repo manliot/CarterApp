@@ -141,6 +141,7 @@ class listaPrestamos extends Component {
         }, () => {
             this.getLista()
             this.refs.infoG.getInfo()
+            console.log(this.refs.infoG.style)
         })
        // this.refs.myFlatList.scrollToEnd();
     }
@@ -182,6 +183,7 @@ class listaPrestamos extends Component {
             tx.executeSql(query, [this.state.idItem], (tx, res) => {
                 if (res.rowsAffected > 0) {
                     this.getLista()
+                    this.refs.infoG.getInfo()
                     Alert.alert(
                         'Borrado exitoso',
                         'Se ha borado el item satifactoriamente',
@@ -208,6 +210,7 @@ const styles = StyleSheet.create({
     },
     InfoGeneral: {
         flex: 1,
+       width: Dimensions.get('window').width
     },
     lista: {
         marginTop: 15,
