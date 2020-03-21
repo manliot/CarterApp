@@ -1,22 +1,12 @@
-'use strict'
-//Imports
+
+//Imports Components
 import React, { Component } from 'react'
 import { View, Text, TouchableWithoutFeedback, TouchableHighlight, Alert, StyleSheet, TextInput, Dimensions, ScrollView } from 'react-native' //Components used
-import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
 import { Container, Content } from 'native-base'
-//Opening DataBase  
-const db = openDatabase({
-    name: 'posqlitExmple.db',
-    createFromLocation: '~www/sqlitExmple.db'
-},
-    (good) => { //in case of success print in the Console
-        console.log('OpenMensaje', good)
-    },
-    (err) => { // in case of error print in the Console
-        console.log('errorMensaje', err)
-    }
-);
+import { connect } from 'react-redux'
 
+//ACTIONS (Redux) (Global State)
+import { SetInfoUser } from '../actions/actions'
 
 class LoginView extends Component {
     constructor(props) {
@@ -24,53 +14,42 @@ class LoginView extends Component {
         this.state = { //this state is used to search the user in the DataBase (Log in)
             usuario: '',
             contraseña: '',
-            nombre: '',
-            dataBase: db
         };
     }
     render() {
         return (
-            <Container style={{backgroundColor:'#ecfcff'}}>
-                <Content style={{backgroundColor:'#ecfcff'}}>
+            <Container style={{ backgroundColor: '#ecfcff' }}>
+                <Content style={{ backgroundColor: '#ecfcff' }}>
                     <ScrollView>
                         <View style={styles.container} >
                             <Text style={styles.title}>CarterAPP</Text>
 
                             {/*  onChangeText: update the state with the text in the textInput*/}
-                            <TextInput style={styles.textIn1} placeholderTextColor='grey' placeholder='UserName' onChangeText={(text) => this.setState({ usuario: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }}/>
-                            <TextInput secureTextEntry={true} style={styles.textIn2} placeholderTextColor='grey' placeholder='Password' onChangeText={(text) => this.setState({ contraseña: text })} ref='_2'/>
-
+                            <TextInput style={styles.textIn1} placeholderTextColor='grey' placeholder='Usuario' onChangeText={(text) => this.setState({ usuario: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
+                            <TextInput secureTextEntry={true} style={styles.textIn2} placeholderTextColor='grey' placeholder='Contraseña' onChangeText={(text) => this.setState({ contraseña: text })} ref='_2' />
 
                             <TouchableHighlight onPress={(this.onLogin.bind(this))} style={styles.button}>
                                 <Text style={{ color: 'white' }}> Log in </Text>
                             </TouchableHighlight>
                             <TouchableWithoutFeedback onPress={(this.onRegister.bind(this))} style={styles.buttonRegister}>
-                                <Text style={styles.textButton}> you don't have account?. click here  </Text>
+                                <Text style={styles.textButton}>No estas Registrado? Click aqui</Text>
                             </TouchableWithoutFeedback>
 
                         </View>
                     </ScrollView>
-
                 </Content>
-
                 <View style={styles.versionView}>
                     <Text style={styles.version}>V 1.0</Text>
                     <Text style={styles.version} >By: Manlio Tejeda</Text>
                 </View>
-
-
             </Container>
-
-
-
         )
     }
     onRegister() {//to register new users
-
-        this.props.navigation.navigate('RegisterUser', { param: this.state.dataBase }) // send the DataBase
+        this.props.navigation.navigate('RegisterUser')
     }
-    borrar() {// to delete a user 
-        db.transaction(tx => {
+    borrar() {// to delete a user //npt necesary
+        this.props.db.transaction(tx => {
             tx.executeSql('DELETE FROM  DebenList WHERE Usuario=?', ['Admin'],
                 (tx, res) => {
                     for (let i = 0; i < res.rows.length; i++) {
@@ -80,8 +59,8 @@ class LoginView extends Component {
             )
         })
     }
-    Mostrarlista() {//to see all the users
-        db.transaction(tx => {
+    Mostrarlista() {//to see all the users //npt necesary
+        this.props.db.transaction(tx => {
             tx.executeSql('SELECT * FROM  Usuario ', [],
                 (tx, res) => {
                     for (let i = 0; i < res.rows.length; i++) {
@@ -92,37 +71,35 @@ class LoginView extends Component {
         })
     }
     onLogin() {// is called when 'Login' Button is pressed
-        db.transaction((tx) => {
+        this.props.db.transaction((tx) => {
             const { usuario } = this.state;
             const { contraseña } = this.state;
-
-            //Query 'SELECT * FROM Usuario WHERE Usuario = ? and Contraseña=?'
             tx.executeSql('SELECT * FROM Usuario WHERE Usuario = ? and Contraseña=?', [usuario, contraseña], (tx, res) => {
                 const len = res.rows.length;//<-- 0 in case of no users register
-                if (len == 1) { //In case of login success
-                    //row Have the result of query (in a object)
+                if (len == 1) {
                     const row = res.rows;
-                    // destructuration of object rew
-                    this.setState({ nombre: row.item(0).Nombre });
-                    const { nombre } = this.state;
-                    //console.log('Resultado del query: ', row.item(0));
+                    /** ===================
+                    down we update the global state with the result of the query (Nombre and  Usuario)
+                    to be used in Componente_Lista for get the information.
+                    ============================================================================*/
+                    this.props.set_User_Name(row.item(0).Nombre, row.item(0).Usuario)
                     Alert.alert(
-                        `Wellcome ${nombre}`,
-                        'Login Success',
+                        `Bienvenido ${this.props.nombre}!`,
+                        'Has ingresado satifactoriamente',
                         [
                             {
-                                text: 'Go!',
-                                onPress: (this.Aceptar.bind(this))
+                                text: 'Vamos!',
+                                onPress: this.Aceptar.bind(this)
                             }, {
-                                text: 'Cancel',
+                                text: 'Cancelar',
                             }
                         ]
                     )
                 } else {
                     if (len == 0) {
                         Alert.alert(
-                            'Try again',
-                            'Incorrect username and / or password',
+                            'Intenta de nuevo',
+                            'Usuario o Contraseña Incorrecta ',
                             [
                                 {
                                     text: 'Ok'
@@ -135,10 +112,12 @@ class LoginView extends Component {
         });
     }
     Aceptar() {// go to Lista de prestamos
-        const { usuario, nombre } = this.state;
-        this.props.navigation.navigate('Home', { usuario: usuario, Nombre: nombre })
+        this.props.navigation.navigate('Home')
     }
 }
+
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -154,19 +133,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     button: {
-        width: 150,
-        height: 30,
+        width: 250,
+        height: 40,
         backgroundColor: '#3e64ff',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 50,
         marginBottom: 10,
-        borderRadius: 8,
+        borderRadius: 20,
         borderWidth: 1
     },
     buttonRegister: {
         width: 300,
-        height: 30,
+        height: 40,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 10,
@@ -202,5 +181,18 @@ const styles = StyleSheet.create({
         color: 'grey',
     },
 })
-//export default LoginView;
-module.exports = LoginView;
+const mapStateToProps = (state) => {
+    return {
+        db: state.db,
+        nombre: state.nombre,
+        usuario: state.usuario
+    }
+}
+const mapDispathToProps = (dispath) => {
+    return {
+        set_User_Name: (nombre, usuario) => {
+            return dispath(SetInfoUser(nombre, usuario))
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispathToProps)(LoginView);

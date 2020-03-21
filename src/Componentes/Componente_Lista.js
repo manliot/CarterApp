@@ -1,55 +1,63 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableWithoutFeedback, FlatList, Dimensions, TouchableWithoutFeedbackBase, Alert, } from 'react-native'
-import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
+import { View, Text, StyleSheet, TouchableWithoutFeedback, FlatList, Dimensions, Alert, } from 'react-native'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { connect } from 'react-redux'
 
+//actions
+import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
 
 //scenes
-
-
 import InfoGeneral from './InfoGeneral'
 import { NavigationEvents } from 'react-navigation';
 
-//opening database
-const db = openDatabase({
-    name: 'posqlitExmple.db',
-    createFromLocation: '~www/sqlitExmple.db'
-},
-    (good) => { //in case of success print in the Console
-        console.log('OpenMensaje', good)
-    },
-    (err) => { // in case of error print in the Console
-        console.log('errorMensaje', err)
-    }
-);
+const formatter = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0
+})
 class listaPrestamos extends Component {
+    populateDB(tx) {
+        tx.executeSql('SELECT Monto FROM DebenList WHERE Usuario=?', [this.props.usuario], this.deben.bind(this));
+        tx.executeSql('SELECT Monto FROM DeboList WHERE Usuario=?', [this.props.usuario], this.debes.bind(this));
+    }
+    deben(tx, res) {
+        let totalTem = 0;
+        for (let i = 0; i < res.rows.length; ++i) {
+            let item = res.rows.item(i); totalTem = totalTem + item.Monto;
+        }
+        this.props.UpdateDEBEN_(totalTem).bind(this)
+    }
+    debes = (tx, res) => {
+        let totalTem = 0;
+        for (let i = 0; i < res.rows.length; ++i) {
+            let item = res.rows.item(i); totalTem = totalTem + item.Monto;
+        }
+        this.props.UpdateDEBES_(totalTem).bind(this)
+    }
+    getTotalMonto = () => {
+        this.props.db.transaction(this.populateDB.bind(this))
+    }
     constructor() {
         super()
         this.state = {
-            usuario: '',
             FlatListItems: [],
             refreshing: false,
-            expandir: false,
-            idItem: '',
+            expandir: false,//usado para controlar cuando mostar el CONCEPTO
+            item: '',// usado para obtener el id del item seleccionado (flatlist)
         }
     }
     componentDidMount() {
         this.getLista();
+        this.getTotalMonto()
     }
     getLista = () => {
         function ItemList(Id, Monto, Nombre, Concepto, Fecha) {
-            this.Id = Id,
-                this.Monto = Monto,
-                this.Nombre = Nombre,
-                this.Concepto = Concepto,
-                this.Fecha = Fecha
+            this.Id = Id, this.Monto = Monto, this.Nombre = Nombre, this.Concepto = Concepto, this.Fecha = Fecha
         }
-        const { params } = this.props.navigation.state;
-        this.setState({ usuario: params.usuario })
-        db.transaction(tx => {// se llena el flatlistItem con el resultado del query
-            tx.executeSql(`SELECT * FROM ${this.props.TypeList} WHERE Usuario=?`, [this.state.usuario],
+        this.props.db.transaction(tx => {// se llena el flatlistItem con el resultado del query
+            tx.executeSql(`SELECT * FROM ${this.props.TypeList} WHERE Usuario=?`, [this.props.usuario],
                 (tx, res) => {
                     var temp = new Array();
                     for (let i = 0; i < res.rows.length; ++i) {
@@ -70,17 +78,24 @@ class listaPrestamos extends Component {
                 })
         })
     };
-
     render() {
         return (
-
             <FlatList
                 ListHeaderComponent={
                     <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>
-
-                        <InfoGeneral style={styles.InfoGeneral} nav={this.props.navigation.state} ref="infoG" />
+                        <InfoGeneral style={styles.InfoGeneral} />
                         <NavigationEvents
-                            onWillFocus={payload => this.refs.infoG.getInfo()}
+                            onWillFocus={payload => {
+                                if (this.props.refresh) {
+                                    this.setState({
+                                        refreshing: true,
+                                    }, () => {
+                                        this.props.RefreshFalse()
+                                        this.getLista()
+                                        this.getTotalMonto()
+                                    })
+                                }
+                            }}
                         />
                         <View style={styles.Titulo}>
                             <Text style={styles.tex}>  {this.props.Txt} </Text>
@@ -101,28 +116,36 @@ class listaPrestamos extends Component {
         <View>
             <View style={styles.lista}>
                 <View style={styles.ListaLeft}>
-                    <Text> {item.Fecha} </Text>
+                    <Text style={styles.tex2}> {this.props.quien}</Text>
                     <Text style={styles.tex}> {item.Nombre} </Text>
                 </View>
                 <View style={styles.ListaRight}>
-                    <Text style={styles.tex}> ${item.Monto} </Text>
-                    <TouchableWithoutFeedback onPress={() => { this.setState({ expandir: !this.state.expandir, idItem: item.Id }) }}>
-                        <EvilIcons name={(item.Id == this.state.idItem && this.state.expandir) ? 'chevron-up' : 'chevron-down'} size={30} />
+                    <Text style={styles.tex}>{formatter.format(item.Monto)} </Text>
+                    <TouchableWithoutFeedback onPress={() => { this.setState({ expandir: !this.state.expandir, item: item }) }}>
+                        <EvilIcons name={(item.Id == this.state.item.Id && this.state.expandir) ? 'chevron-up' : 'chevron-down'} size={30} />
                     </TouchableWithoutFeedback>
                 </View>
             </View>
-            {(item.Id == this.state.idItem && this.state.expandir) && // se muestra cuando le doy click a el icono de expandir
+            {(item.Id == this.state.item.Id && this.state.expandir) && // se muestra cuando le doy click a el icono de expandir
                 this.getConceptoView({ item })
             }
         </View>
     );
-
+    UpdateList = () => {
+        this.setState({
+            refreshing: true,
+        }, () => {
+            this.getLista()
+            this.getTotalMonto()
+        })
+        // this.refs.myFlatList.scrollToEnd();
+    }
     getConceptoView = ({ item }) => {//View de concepto (se expande dando click en el icono)
         return (
             <View style={styles.Concepto}>
                 <Text ref='texto' style={{ width: Dimensions.get('window').width - 82 }}> {item.Concepto}</Text>
                 <View style={{ marginLeft: 5, justifyContent: 'center' }}>
-                    <TouchableWithoutFeedback ref= 'borrar' onPress={this.alertaBorrar.bind(this)}>
+                    <TouchableWithoutFeedback ref='borrar' onPress={this.alertaBorrar.bind(this)}>
                         < AntDesign name='delete' size={30} />
                     </TouchableWithoutFeedback>
                     <Text style={styles.texabonar}>Borrar</Text>
@@ -134,19 +157,7 @@ class listaPrestamos extends Component {
 
             </View>)
     }
-    UpdateList = () => {
-        this.setState({
-            refreshing: true,
-            refreshingInfoGeneral: !this.state.refreshing,
-        }, () => {
-            this.getLista()
-            this.refs.infoG.getInfo()
-            console.log(this.refs.infoG.style)
-        })
-       // this.refs.myFlatList.scrollToEnd();
-    }
     alertaBorrar() {
-        
         Alert.alert(
             'Advertencia!', 'Una vez borrado el item no podra ser recuperado ¿seguro que desea borrarlo?',
             [
@@ -161,29 +172,32 @@ class listaPrestamos extends Component {
 
         )
     }
-    alertaAbonar(){
+    alertaAbonar() {
+        this.props.navigation.navigate('Detalles', { item: this.state.item })
         Alert.alert(
             'Proximamente..',
             'Actualmente nos econtramos trabajando en esta caracteristica, Disculpe las molestias <3',
             [
                 {
-                    text: 'Ok'
+                    text: 'Ok',
+
                 }
             ]
         )
     }
-    DeleteItem() {
+    DeleteItem() {// puede ir en un archivo separado
         let query = ''
         if (this.props.TypeList == 'DeboList') {
             query = 'DELETE FROM  DeboList where IDdebo=?'
         } else if (this.props.TypeList == 'DebenList') {
             query = 'DELETE FROM  DebenList where IDdeben=?'
         }
-        db.transaction(tx => {
-            tx.executeSql(query, [this.state.idItem], (tx, res) => {
+        this.props.db.transaction(tx => {
+            tx.executeSql(query, [this.state.item.Id], (tx, res) => {
                 if (res.rowsAffected > 0) {
                     this.getLista()
-                    this.refs.infoG.getInfo()
+                    this.getTotalMonto()
+                    this.refs.myFlatList.scrollTop;
                     Alert.alert(
                         'Borrado exitoso',
                         'Se ha borado el item satifactoriamente',
@@ -210,7 +224,7 @@ const styles = StyleSheet.create({
     },
     InfoGeneral: {
         flex: 1,
-       width: Dimensions.get('window').width
+        width: Dimensions.get('window').width
     },
     lista: {
         marginTop: 15,
@@ -223,7 +237,7 @@ const styles = StyleSheet.create({
         //borderBottomWidth: 1.5,
         color: 'grey',
         borderBottomColor: 'grey',
-        borderRadius: 4,
+        borderRadius: 10,
     },
     Concepto: {
 
@@ -248,6 +262,12 @@ const styles = StyleSheet.create({
         marginLeft: 12.5,
 
     },
+    tex2: {
+        fontSize: 15,
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start',
+
+    },
     tex: {
         fontSize: 16,
         justifyContent: 'flex-end',
@@ -262,7 +282,7 @@ const styles = StyleSheet.create({
     ListaLeft: {
         flex: 1,
         alignContent: "center",
-        justifyContent: "center",
+        //justifyContent: "center",
     },
     ListaRight: {
         flex: 0.5,
@@ -275,4 +295,25 @@ const styles = StyleSheet.create({
         color: 'black'
     },
 })
-export default listaPrestamos
+
+const mapStateToProps = (state) => {
+    return {
+        db: state.db,
+        usuario: state.usuario,
+        refresh: state.refresh
+    }
+}
+const mapDispathToProps = (dispath) => {
+    return {
+        UpdateDEBEN_: (deben) => {
+            return dispath(UpdateDEBEN(deben))
+        },
+        UpdateDEBES_: (debes) => {
+            return dispath(UpdateDEBES(debes))
+        },
+        RefreshFalse: () => {
+            return dispath(RefreshFalse())
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispathToProps)(listaPrestamos);

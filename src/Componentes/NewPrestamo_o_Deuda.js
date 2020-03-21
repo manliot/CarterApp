@@ -1,22 +1,10 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, ScrollView, TextInput, Dimensions, TouchableHighlight, Alert, } from 'react-native';
-import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
 import { Header, Left, Right, Body, Title, Icon, Container, } from 'native-base'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { connect } from 'react-redux'
+import { RefreshTrue } from '../actions/actions'
 
-
-
-const db = openDatabase({
-    name: 'posqlitExmple.db',
-    createFromLocation: '~www/sqlitExmple.db'
-},
-    (good) => { //in case of success print in the Console
-        console.log('OpenMensaje', good)
-    },
-    (err) => { // in case of error print in the Console
-        console.log('errorMensaje', err)
-    }
-);
 class AddNewPrestamo extends Component {
     constructor() {
         super()
@@ -24,7 +12,6 @@ class AddNewPrestamo extends Component {
             Monto: '',
             Nombre: '',
             concepto: '',
-            usuario: '',
             date: ''
         }
     }
@@ -39,27 +26,19 @@ class AddNewPrestamo extends Component {
                         <Title style={{ color: 'white', fontSize: 20, }}> CarterApp</Title>
                     </Body>
                     <Right />
-
                 </Header>
-
-
                 <ScrollView>
                     <Body>
                         <Text style={styles.title}> {this.props.scrn} </Text>
-                        <TextInput style={styles.textIn} autoFocus={true} keyboardType='numeric' placeholderTextColor='grey' placeholder='Monto' onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
-                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder={this.props.Txt} onChangeText={(text) => this.setState({ Nombre: text })} ref='_2' onSubmitEditing={(event) => { this.refs._3.focus(); }}/>
-                        <TextInput style={styles.textInConcepto} words={true} multiline={true} placeholderTextColor='grey' placeholder='concepto' onChangeText={(text) => this.setState({ concepto: text })} ref='_3' />
+                        <TextInput style={styles.textIn} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt+"*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
+                        <TextInput style={styles.textIn} keyboardType='numeric' placeholderTextColor='grey' placeholder={this.props.Monto+"*"} onChangeText={(text) => this.setState({ Monto: text })} ref='_2' onSubmitEditing={(event) => { this.refs._3.focus(); }} />
+                        <TextInput style={styles.textInConcepto} words={true} multiline={true} placeholderTextColor='grey' placeholder={this.props.Concepto} onChangeText={(text) => this.setState({ concepto: text })} ref='_3' />
                         <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
                             <Text style={styles.textButton}> Add </Text>
                         </TouchableHighlight>
                     </Body>
                 </ScrollView>
-
-
-
             </Container>
-
-
         );
     }
 
@@ -68,30 +47,17 @@ class AddNewPrestamo extends Component {
         const month = new Date().getMonth() + 1; //Current Month
         const year = new Date().getFullYear(); //Current Year
         this.setState({
-            //Setting the value of the date time
-            date:
-                //date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
-                date + '/' + month + '/' + year,
+            date: date + '/' + month + '/' + year  //date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
         });
-
         const { Monto } = this.state
         const { Nombre } = this.state
         const { concepto } = this.state
-
-        const { params } = this.props.navigation.state;
-
-        this.setState({ usuario: params.usuario })
-        //INSERT INTO DebenList (Monto,Nombre,Concepto,Fecha,Usuario) VALUES(1000,"alguien","uBER","20/1/20","ADMIN")
-
         if (Monto == '' || isNaN(Monto)) {
             alert('Recuerde que el campo monto debe estar lleno y ser un valor numerico');
         } else {
-            console.log(params.usuario)
-            db.transaction(tx => {
-                console.log(this.props.TypeList + params.usuario)
+            this.props.db.transaction(tx => {
                 tx.executeSql(`INSERT INTO ${this.props.TypeList} (Monto,Nombre,Concepto,Fecha,Usuario) VALUES(?,?,?,?,?)`,
-                    [Monto, Nombre, concepto, this.state.date, this.state.usuario], (tx, results) => {
-                        console.log('Results', results.rowsAffected);
+                    [Monto, Nombre, concepto, this.state.date, this.props.usuario], (tx, results) => {
                         if (results.rowsAffected > 0) {
                             Alert.alert(
                                 'Success',
@@ -99,8 +65,10 @@ class AddNewPrestamo extends Component {
                                 [
                                     {
                                         text: 'Ok',
-                                        onPress: () =>
-                                            this.props.navigation.navigate('Home'),
+                                        onPress: () => {
+                                            this.props.RefreshTrue()
+                                            this.props.navigation.navigate('Home')
+                                        },
                                     },
                                 ],
                                 { cancelable: false }
@@ -174,4 +142,17 @@ const styles = StyleSheet.create({
     },
 })
 
-module.exports = AddNewPrestamo;
+const mapStateToProps = (state) => {
+    return {
+        db: state.db,
+        usuario: state.usuario,
+    }
+}
+const mapDispathToProps = (dispath) => {
+    return {
+        RefreshTrue: () => {
+            return dispath(RefreshTrue())
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispathToProps)(AddNewPrestamo);

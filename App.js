@@ -1,39 +1,49 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Dimensions } from 'react-native'
+import { View, StyleSheet, SafeAreaView, ScrollView, Image } from 'react-native'
 import { createAppContainer, } from 'react-navigation';
 import { createStackNavigator, } from 'react-navigation-stack';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer'
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import reducer from './src/Reducers'
+
+//VectorIcons
 import Foundation from 'react-native-vector-icons/Foundation';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-//views
+
+
+
 import Login from './src/Componentes/LoginView'
-import RegisterUser from './src/Componentes/RegisterUser'
+import Register_Component from './src/Componentes/Register_Component'
 import NewPrestamo_o_Deuda from './src/Componentes/NewPrestamo_o_Deuda'
 import Componente_Lista from './src/Componentes/Componente_Lista'
 import Cartera from './src/Componentes/Cartera'
+import MasDetalesItem from './src/Componentes/masDetalesItem'
 
-//this aplication have this structure:
-//
-//                                   
-//StackNavigator-> DrawerNaviagtor->StackNavigator->tabNavigator
-/* coolors color hunt
-3e64ff
-5edfff
-b2fcff
-ecfcff
-*/ 
-//Scenes
+/*============================================================
+this aplication have this navigation structure:
+                                 
+StackNavigator-> DrawerNaviagtor->StackNavigator->tabNavigator
+============================================================*/
 
+/*============================================================ 
+coolors color hunt
+#3e64ff,#5edfff,#b2fcff,#ecfcff
+============================================================*/
+
+/*===========================================================
 //Important: in this part only use a View call Lista de Prestamos but with differents params
 //TypeList is the name of Table to search in the 2 cases ( DebenList or DebesList)
+============================================================*/
+
 const AppTabNavigator = createBottomTabNavigator({
   ListaPrestamos: {
-    screen: (props) => <Componente_Lista {...props} TypeList='DebenList' Txt='Tus Prestamos: ' />,
+    screen: (props) => <Componente_Lista {...props} TypeList='DebenList' Txt='Tus Prestamos: ' quien='Le prestaste a' />,
     navigationOptions: {
       tabBarLabel: "lista de Prestamos",
       tabBarIcon: ({ tintColor }) => (
@@ -55,7 +65,7 @@ const AppTabNavigator = createBottomTabNavigator({
   },
 
   ListaDeudas: {
-    screen: (props) => <Componente_Lista {...props} TypeList='DeboList' Txt='Tus Deudas:' />,
+    screen: (props) => <Componente_Lista {...props} TypeList='DeboList' Txt='Tus Deudas:' quien='Le debes a' />,
     navigationOptions: {
       tabBarLabel: "lista de Deudas",
       tabBarIcon: ({ tintColor }) => (
@@ -67,7 +77,7 @@ const AppTabNavigator = createBottomTabNavigator({
     },
   },
 }, {
-    navigationOptions: ({ navigation }) => {
+  navigationOptions: ({ navigation }) => {
     return {
       headerTitle: 'CarterAPP',
       headerStyle: { backgroundColor: '#5173FF' },
@@ -75,21 +85,30 @@ const AppTabNavigator = createBottomTabNavigator({
     }
   }
 })
+const AppStackNavigator3 = createStackNavigator({
+  screen: AppTabNavigator,
+  screen: MasDetalesItem,
+})
 const AppStackNavigator = createStackNavigator({
   AppTabNavigtator: {
     screen: AppTabNavigator,
-  }
-}, {
-  defaultNavigationOptions: ({ navigation }) => {
-    return {
-      headerLeft: () => (
-        <AntDesign name="menuunfold" style={{ paddingLeft: 10, marginLeft: 4 }} onPress={() => navigation.openDrawer()} color='white' size={25} />
-      )
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: () => (
+          <AntDesign name="menuunfold" style={{ paddingLeft: 10, marginLeft: 4 }} onPress={() => navigation.openDrawer()} color='white' size={25} />
+        )
+      }
     }
+  },
+  Detalles: {
+    screen: MasDetalesItem,
+    navigationOptions: {
+      title: '',
+      headerStyle: { backgroundColor: '#5173FF' },
+      headerTintColor: '#ffffff',
+    },
   }
 })
-
-
 const CustomDrawerComponent = (props) => (
   <SafeAreaView style={{ flex: 1 }}>
     <View style={{ height: 150, backgroundColor: '#ecfcff', alignItems: 'center', justifyContent: 'center' }}>
@@ -113,7 +132,7 @@ const AppDraweNavigator = createDrawerNavigator({
     },
   },
   NewPrestamo: {
-    screen: (props) => <NewPrestamo_o_Deuda {...props} TypeList='DebenList' Txt='Nombre del Deudor' scrn='Nuevo Prestamos' />,
+    screen: (props) => <NewPrestamo_o_Deuda {...props} TypeList='DebenList' Txt='¿A quien le prestaste?' scrn='Nuevo Prestamo' Monto='¿Cuento le prestaste?' Concepto=' ¿Para que se los prestaste?' />,
     navigationOptions: {
       title: 'Nuevo Prestamo',
       headerStyle: { backgroundColor: '#5173FF' },
@@ -126,7 +145,7 @@ const AppDraweNavigator = createDrawerNavigator({
     },
   },
   NewDeuda: {
-    screen: (props) => <NewPrestamo_o_Deuda {...props} TypeList='DeboList' Txt='Nombre del Prestador' scrn='Nueva Deuda' />,
+    screen: (props) => <NewPrestamo_o_Deuda {...props} TypeList='DeboList' Txt='¿Quien te prestó?' scrn='Nueva Deuda' Monto='¿Cuanto te prestó?' Concepto='¿Para que te los prestó?' />,
     navigationOptions: {
       title: 'Nueva deuda',
       headerStyle: { backgroundColor: '#5173FF' },
@@ -154,8 +173,6 @@ const AppDraweNavigator = createDrawerNavigator({
   }
 })
 
-
-
 const AppStackNavigator1 = createStackNavigator({
   Login: {
     screen: Login,
@@ -167,7 +184,7 @@ const AppStackNavigator1 = createStackNavigator({
 
   },
   RegisterUser: {
-    screen: RegisterUser,
+    screen: Register_Component,
     navigationOptions: {
       title: '',
       headerStyle: { backgroundColor: '#5173FF' },
@@ -178,24 +195,31 @@ const AppStackNavigator1 = createStackNavigator({
 })
 
 
+
 const AppContainer = createAppContainer(AppStackNavigator1);
 
-export default class App extends React.Component {
+
+const store = createStore(reducer);
+
+export default class App extends Component {
   render() {
-    return <AppContainer />
+    return (
+      <Provider store={store}>
+        <AppContainer manli='soy el mapa'>
+        </AppContainer>
+      </Provider>
+    )
   }
 }
 
+
+
 const styles = StyleSheet.create({
   tabstyle: {
-
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-
   },
-
-
 })
 
 
