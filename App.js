@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Root } from "native-base";
 import { View, StyleSheet, SafeAreaView, ScrollView, Image } from 'react-native'
 import { createAppContainer, } from 'react-navigation';
 import { createStackNavigator, } from 'react-navigation-stack';
@@ -10,14 +11,14 @@ import reducer from './src/Reducers'
 
 //VectorIcons
 import Foundation from 'react-native-vector-icons/Foundation';
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import Feather from 'react-native-vector-icons/Feather'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 
-
+//components
 import Login from './src/Componentes/LoginView'
 import Register_Component from './src/Componentes/Register_Component'
 import NewPrestamo_o_Deuda from './src/Componentes/NewPrestamo_o_Deuda'
@@ -40,7 +41,9 @@ coolors color hunt
 //Important: in this part only use a View call Lista de Prestamos but with differents params
 //TypeList is the name of Table to search in the 2 cases ( DebenList or DebesList)
 ============================================================*/
-
+/**
+ * 
+ */
 const AppTabNavigator = createBottomTabNavigator({
   ListaPrestamos: {
     screen: (props) => <Componente_Lista {...props} TypeList='DebenList' Txt='Tus Prestamos: ' quien='Le prestaste a' />,
@@ -82,12 +85,9 @@ const AppTabNavigator = createBottomTabNavigator({
       headerTitle: 'CarterAPP',
       headerStyle: { backgroundColor: '#5173FF' },
       headerTintColor: '#ffffff',
+      //headerShown: false
     }
   }
-})
-const AppStackNavigator3 = createStackNavigator({
-  screen: AppTabNavigator,
-  screen: MasDetalesItem,
 })
 const AppStackNavigator = createStackNavigator({
   AppTabNavigtator: {
@@ -95,7 +95,7 @@ const AppStackNavigator = createStackNavigator({
     navigationOptions: ({ navigation }) => {
       return {
         headerLeft: () => (
-          <AntDesign name="menuunfold" style={{ paddingLeft: 10, marginLeft: 4 }} onPress={() => navigation.openDrawer()} color='white' size={25} />
+          <Feather name="menu" style={{ paddingLeft: 10, marginLeft: 4 }} onPress={() => navigation.openDrawer()} color='black' size={25} />
         )
       }
     }
@@ -111,7 +111,7 @@ const AppStackNavigator = createStackNavigator({
 })
 const CustomDrawerComponent = (props) => (
   <SafeAreaView style={{ flex: 1 }}>
-    <View style={{ height: 150, backgroundColor: '#ecfcff', alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ height: 200, backgroundColor: '#5173FF', alignItems: 'center', justifyContent: 'center' }}>
       <Image source={{ uri: 'https://yt3.ggpht.com/a/AGF-l7_G980npHDLK-MsvflU7J8aluAWBb0_S13C8Q=s900-c-k-c0xffffffff-no-rj-mo' }}
         style={{ height: 120, width: 120, borderRadius: 60, }} />
     </View>
@@ -189,25 +189,26 @@ const AppStackNavigator1 = createStackNavigator({
       title: '',
       headerStyle: { backgroundColor: '#5173FF' },
       headerTintColor: '#ffffff',
+      headerShown: false
     },
   },
   initialRouteName: 'Login',
 })
 
-
-
 const AppContainer = createAppContainer(AppStackNavigator1);
-
 
 const store = createStore(reducer);
 
 export default class App extends Component {
   render() {
     return (
-      <Provider store={store}>
-        <AppContainer manli='soy el mapa'>
-        </AppContainer>
-      </Provider>
+      <Root>
+        <Provider store={store}>
+          <AppContainer manli='soy el mapa'>
+          </AppContainer>
+        </Provider>
+      </Root>
+
     )
   }
 }

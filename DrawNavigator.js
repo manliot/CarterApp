@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, TextInput, ImageBackground ,SafeAreaView,ScrollView,Dimensions} from 'react-native';
-import { createDrawerNavigator,DrawerItems } from 'react-navigation-drawer'
-import {  } from "react-navigation";
+import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer'
+import { } from "react-navigation";
 
 //for menu (DrawNavigator)
 import NewDeuda from './src/Componentes/AddNewDeuda'
 import NewPrestamo from './src/Componentes/AddNewPrestamo'
-const CustomDraweCOMPONENT=(props)=>(
-    <SafeAreaView style={{flex:1}}>
+const CustomDraweCOMPONENT = (props) => (
+    <SafeAreaView style={{ flex: 1 }}>
         <ScrollView>
-            <DrawerItems{...props}/>
+            <DrawerItems{...props} />
         </ScrollView>
     </SafeAreaView>
 )
@@ -26,7 +26,7 @@ const AppDraweNavigator = createDrawerNavigator({
 class DreawNav extends Component {
     render() {
         return (
-            <AppDraweNavigator/>
+            <AppDraweNavigator />
 
         );
     }

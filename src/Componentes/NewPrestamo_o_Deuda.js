@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, ScrollView, TextInput, Dimensions, TouchableHighlight, Alert, } from 'react-native';
-import { Header, Left, Right, Body, Title, Icon, Container, } from 'native-base'
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import { Header, Left, Right, Body, Title, Icon, Container, View, } from 'native-base'
+import Feather from 'react-native-vector-icons/Feather'
 import { connect } from 'react-redux'
 import { RefreshTrue } from '../actions/actions'
 
@@ -18,20 +18,22 @@ class AddNewPrestamo extends Component {
     render() {
         return (
             <Container>
-                <Header style={{ backgroundColor: '#5564eb', width: Dimensions.get('window').width, }}>
+                <Header transparent>
                     <Left>
-                        <AntDesign name="menuunfold" style={{ paddingLeft: 10 }} onPress={() => this.props.navigation.openDrawer()} color='white' size={25} />
+                        <View style={{ backgroundColor: '#5564eb', alignItems: 'center', justifyContent: 'center', width: 35, height: 35, borderRadius: 60, marginTop: 13 }}>
+                            <Feather name="menu" onPress={() => this.props.navigation.openDrawer()} color='white' size={25} />
+                        </View>
+
                     </Left>
                     <Body>
-                        <Title style={{ color: 'white', fontSize: 20, }}> CarterApp</Title>
+                        <Text style={styles.title}> {this.props.scrn} </Text>
                     </Body>
-                    <Right />
+
                 </Header>
                 <ScrollView>
                     <Body>
-                        <Text style={styles.title}> {this.props.scrn} </Text>
-                        <TextInput style={styles.textIn} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt+"*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
-                        <TextInput style={styles.textIn} keyboardType='numeric' placeholderTextColor='grey' placeholder={this.props.Monto+"*"} onChangeText={(text) => this.setState({ Monto: text })} ref='_2' onSubmitEditing={(event) => { this.refs._3.focus(); }} />
+                        <TextInput style={styles.textIn2} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt + "*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
+                        <TextInput style={styles.textIn} keyboardType='numeric' placeholderTextColor='grey' placeholder={this.props.Monto + "*"} onChangeText={(text) => this.setState({ Monto: text })} ref='_2' onSubmitEditing={(event) => { this.refs._3.focus(); }} />
                         <TextInput style={styles.textInConcepto} words={true} multiline={true} placeholderTextColor='grey' placeholder={this.props.Concepto} onChangeText={(text) => this.setState({ concepto: text })} ref='_3' />
                         <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
                             <Text style={styles.textButton}> Add </Text>
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     title: {
-        marginTop: 25,
+        marginTop: 13,
         fontSize: 20,
         color: 'black',
     },
@@ -110,14 +112,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     button: {
-        width: 150,
-        height: 30,
+        width: 250,
+        height: 40,
         backgroundColor: '#5564eb',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 70,
         marginBottom: 10,
-        borderRadius: 8,
+        borderRadius: 20,
         borderWidth: 1
     },
     textButton: {
@@ -126,6 +128,14 @@ const styles = StyleSheet.create({
 
     textIn: {
         marginTop: 45,
+        width: 270,
+        height: 40,
+        borderBottomWidth: 2,
+        color: 'black',
+        borderBottomColor: 'grey'
+    },
+    textIn2: {
+        marginTop: 70,
         width: 270,
         height: 40,
         borderBottomWidth: 2,

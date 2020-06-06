@@ -1,13 +1,12 @@
 import React, { Component, memo } from 'react'
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
 import { connect } from 'react-redux'
-
+import 'intl';
+import 'intl/locale-data/jsonp/en'; // or any other locale you need
 
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 const formatter = new Intl.NumberFormat('es-CO', {
-  style: 'currency',
-  currency: 'COP',
-  minimumFractionDigits: 0
+  style: "currency", currency: "COP"
 })
 const height = Dimensions.get('window').height
 class Componente_Lista extends Component {

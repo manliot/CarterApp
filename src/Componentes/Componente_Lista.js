@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableWithoutFeedback, FlatList, Dimensions, Alert, } from 'react-native'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableHighlight, FlatList, Dimensions, Alert, } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { Header, Left, Right, Body, Title, Icon, Container, } from 'native-base'
+import Feather from 'react-native-vector-icons/Feather'
+import 'intl';
+import 'intl/locale-data/jsonp/en'; // or any other locale you need
+
 import { connect } from 'react-redux'
 
 //actions
@@ -11,11 +14,10 @@ import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
 //scenes
 import InfoGeneral from './InfoGeneral'
 import { NavigationEvents } from 'react-navigation';
+import { HeaderTitle } from 'react-navigation-stack'
 
 const formatter = new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 0
+    style: "currency", currency: "COP", minimumFractionDigits: 0
 })
 class listaPrestamos extends Component {
     populateDB(tx) {
@@ -78,38 +80,55 @@ class listaPrestamos extends Component {
                 })
         })
     };
+
     render() {
+        const { navigation } = this.props;
         return (
-            <FlatList
-                ListHeaderComponent={
-                    <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>
-                        <InfoGeneral style={styles.InfoGeneral} />
-                        <NavigationEvents
-                            onWillFocus={payload => {
-                                if (this.props.refresh) {
-                                    this.setState({
-                                        refreshing: true,
-                                    }, () => {
-                                        this.props.RefreshFalse()
-                                        this.getLista()
-                                        this.getTotalMonto()
-                                    })
-                                }
-                            }}
-                        />
-                        <View style={styles.Titulo}>
-                            <Text style={styles.tex}>  {this.props.Txt} </Text>
+            <Container>
+                <Header style={{ backgroundColor: '#5173FF', borderBottomWidth: 1.5, borderBottomColor: 'grey', }}>
+                    <Text style={styles.title}> Sing Up  </Text>
+                    <Right>
+                        <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: 40, alignItems: 'center', }} onPress={() => { this.props.navigation.goBack() }}>
+                            <Feather name='x-circle' size={25} />
+                        </TouchableHighlight>
+                    </Right>
+
+                </Header >
+
+                <FlatList
+                    ListHeaderComponent={
+                        <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>
+                            <InfoGeneral style={styles.InfoGeneral} />
+                            <NavigationEvents
+                                onWillFocus={payload => {
+                                    if (this.props.refresh) {
+                                        this.setState({
+                                            refreshing: true,
+                                        }, () => {
+                                            this.props.RefreshFalse()
+                                            this.getLista()
+                                            this.getTotalMonto()
+                                        })
+                                    }
+                                }}
+                            />
+                            <View style={styles.Titulo}>
+                                <Text style={styles.tex}>  {this.props.Txt} </Text>
+                            </View>
                         </View>
-                    </View>
-                }
-                style={{ flex: 1, backgroundColor: '#ecfcff' }}
-                ref='myFlatList'
-                data={this.state.FlatListItems}
-                renderItem={this.renderItemComponent}
-                keyExtractor={item => 'i' + item.Id}
-                refreshing={this.state.refreshing}
-                onRefresh={this.UpdateList}
-            />
+                    }
+                    style={{ flex: 1, backgroundColor: '#ecfcff' }}
+                    ref='myFlatList'
+                    data={this.state.FlatListItems}
+                    renderItem={this.renderItemComponent}
+                    keyExtractor={item => 'i' + item.Id}
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.UpdateList}
+                />
+            </Container>
+
+
+
         );
     }
     renderItemComponent = ({ item }) => (//View de los items del FlatList
@@ -120,14 +139,18 @@ class listaPrestamos extends Component {
                     <Text style={styles.tex}> {item.Nombre} </Text>
                 </View>
                 <View style={styles.ListaRight}>
-                    <Text style={styles.tex}>{formatter.format(item.Monto)} </Text>
-                    <TouchableWithoutFeedback onPress={() => { this.setState({ expandir: !this.state.expandir, item: item }) }}>
-                        <EvilIcons name={(item.Id == this.state.item.Id && this.state.expandir) ? 'chevron-up' : 'chevron-down'} size={30} />
-                    </TouchableWithoutFeedback>
+                    <View style={styles.ListaSub2}>
+                        <Text style={styles.tex}>{formatter.format(item.Monto)} </Text>
+                    </View>
+                    <View style={styles.ListaSub}>
+                        <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: 40, alignItems: 'center', justifyContent: 'center' }} onPress={() => { this.setState({ expandir: !this.state.expandir, item: item }) }}>
+                            <AntDesign name='arrowright' size={20} />
+                        </TouchableHighlight>
+                    </View>
                 </View>
             </View>
             {(item.Id == this.state.item.Id && this.state.expandir) && // se muestra cuando le doy click a el icono de expandir
-                this.getConceptoView({ item })
+                this.GoDetails()
             }
         </View>
     );
@@ -140,79 +163,11 @@ class listaPrestamos extends Component {
         })
         // this.refs.myFlatList.scrollToEnd();
     }
-    getConceptoView = ({ item }) => {//View de concepto (se expande dando click en el icono)
-        return (
-            <View style={styles.Concepto}>
-                <Text ref='texto' style={{ width: Dimensions.get('window').width - 82 }}> {item.Concepto}</Text>
-                <View style={{ marginLeft: 5, justifyContent: 'center' }}>
-                    <TouchableWithoutFeedback ref='borrar' onPress={this.alertaBorrar.bind(this)}>
-                        < AntDesign name='delete' size={30} />
-                    </TouchableWithoutFeedback>
-                    <Text style={styles.texabonar}>Borrar</Text>
-                    <TouchableWithoutFeedback onPress={this.alertaAbonar.bind(this)} >
-                        <MaterialIcons name='payment' size={30} />
-                    </TouchableWithoutFeedback>
-                    <Text style={styles.texabonar}>abonar</Text>
-                </View>
+    GoDetails() {
+        this.setState({ expandir: !this.state.expandir })
+        this.props.navigation.navigate('Detalles', { item: this.state.item, TypeList: this.props.TypeList })
+    }
 
-            </View>)
-    }
-    alertaBorrar() {
-        Alert.alert(
-            'Advertencia!', 'Una vez borrado el item no podra ser recuperado ¿seguro que desea borrarlo?',
-            [
-                {
-                    text: 'Si!',
-                    onPress: this.DeleteItem.bind(this)
-                },
-                {
-                    text: 'Cancelar'
-                }
-            ],
-
-        )
-    }
-    alertaAbonar() {
-        this.props.navigation.navigate('Detalles', { item: this.state.item })
-        Alert.alert(
-            'Proximamente..',
-            'Actualmente nos econtramos trabajando en esta caracteristica, Disculpe las molestias <3',
-            [
-                {
-                    text: 'Ok',
-
-                }
-            ]
-        )
-    }
-    DeleteItem() {// puede ir en un archivo separado
-        let query = ''
-        if (this.props.TypeList == 'DeboList') {
-            query = 'DELETE FROM  DeboList where IDdebo=?'
-        } else if (this.props.TypeList == 'DebenList') {
-            query = 'DELETE FROM  DebenList where IDdeben=?'
-        }
-        this.props.db.transaction(tx => {
-            tx.executeSql(query, [this.state.item.Id], (tx, res) => {
-                if (res.rowsAffected > 0) {
-                    this.getLista()
-                    this.getTotalMonto()
-                    this.refs.myFlatList.scrollTop;
-                    Alert.alert(
-                        'Borrado exitoso',
-                        'Se ha borado el item satifactoriamente',
-                        [
-                            {
-                                text: 'Ok'
-                            }
-                        ]
-                    )
-                } else {
-                    console.log('error #100: no se ha borrado ningun elemento de la tabla {DebenItem}')
-                }
-            })
-        })
-    }
 }
 
 const styles = StyleSheet.create({
@@ -225,6 +180,12 @@ const styles = StyleSheet.create({
     InfoGeneral: {
         flex: 1,
         width: Dimensions.get('window').width
+    }, title: {
+        flex: 1,
+        marginTop: 13,
+        fontSize: 20,
+        color: 'white',
+        marginLeft: (Dimensions.get('window').width / 2) - 60,
     },
     lista: {
         marginTop: 15,
@@ -234,20 +195,17 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - 35,// si se cambia entonces cambiar en el gettConceptoview
         height: 62,
         borderWidth: 0.3,
-        //borderBottomWidth: 1.5,
         color: 'grey',
         borderBottomColor: 'grey',
         borderRadius: 10,
     },
     Concepto: {
-
         marginTop: 0,
         flexDirection: 'row',
         backgroundColor: '#b2fcff',
         marginLeft: 17.5,
         width: Dimensions.get('window').width - 35,
         height: 100,
-        borderWidth: 0.5,
         borderBottomWidth: 1.5,
         color: 'grey',
         borderBottomColor: 'grey',
@@ -260,13 +218,11 @@ const styles = StyleSheet.create({
     ConceptoLeft: {
         flex: 3,
         marginLeft: 12.5,
-
     },
     tex2: {
         fontSize: 15,
         justifyContent: 'flex-end',
         alignItems: 'flex-start',
-
     },
     tex: {
         fontSize: 16,
@@ -282,12 +238,21 @@ const styles = StyleSheet.create({
     ListaLeft: {
         flex: 1,
         alignContent: "center",
-        //justifyContent: "center",
     },
-    ListaRight: {
-        flex: 0.5,
+    ListaSub: {
+        flex: 1.5,
         flexDirection: 'row',
         justifyContent: 'flex-end',
+    },
+    ListaSub2: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+    },
+    ListaRight: {
+        flex: 1,
+        flexDirection: 'column',
+        alignContent: 'flex-end',
     },
     texabonar: {
         marginTop: 0,
