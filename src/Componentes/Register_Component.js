@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Alert, View, TextInput, ScrollView, TouchableHighlight, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { Text, Alert, View, TextInput, ScrollView, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux'
-import { Header, Right, Toast, Card } from 'native-base'
+import { Header, Right, Toast, Container } from 'native-base'
 import Feather from 'react-native-vector-icons/Feather'
 
-const height = (Dimensions.get('window').height)
-const width = (Dimensions.get('window').width)
+//styles
+const stylesRegister = require("../Styles/RegisterStyles")
+const stylesLogin = require("../Styles/LoginStyles")
+
+
 class RegisterUser extends Component {
     constructor() {
         super()
@@ -19,40 +22,39 @@ class RegisterUser extends Component {
     }
     render() {
         return (
-            <View style={styles.container} >
+            <View style={stylesRegister.container} >
                 <Header transparent>
-                    <Text style={styles.title}> Sing Up  </Text>
+                    <Text style={stylesRegister.title}> Sing Up  </Text>
                     <Right>
-                        <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: 40, alignItems: 'center', }} onPress={() => { this.props.navigation.goBack() }}>
+                        <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: '40%', alignItems: 'center' }} onPress={() => { this.props.navigation.goBack() }}>
                             <Feather name='x-circle' size={25} />
                         </TouchableHighlight>
                     </Right>
-
                 </Header >
-                <ScrollView>
-                    <View style={styles.body}>
-                        <Text style={styles.title2}> Por favor, completa todos los campos. </Text>
-                        <TextInput style={styles.textIn1} autoFocus={true} placeholderTextColor='grey' placeholder='Nombre*' onChangeText={(text) => this.setState({ Name: text })} onSubmitEditing={(event) => { this.refs.lastname.focus(); }} ref='name' />
-                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='Apellido*' onChangeText={(text) => this.setState({ LastName: text })} ref='lastname' onSubmitEditing={(event) => { this.refs.edad.focus(); }} />
-                        <TextInput style={styles.textIn} placeholderTextColor='grey' keyboardType='numeric' placeholder='Edad*' onChangeText={(text) => this.setState({ Age: text })} onSubmitEditing={(event) => { this.refs.username.focus(); }} ref='edad' />
-                        <TextInput style={styles.textIn} placeholderTextColor='grey' placeholder='Usuario*' onChangeText={(text) => this.setState({ UserName: text })} onSubmitEditing={(event) => { this.refs.password.focus(); }} ref='username' />
-                        <TextInput secureTextEntry={true} style={styles.textIn} placeholderTextColor='grey' placeholder='Contraseña*' onChangeText={(text) => this.setState({ Password: text })} ref='password' />
-                        <TouchableHighlight onPress={(this.onRegister.bind(this))} style={styles.button} ref='registrarse'>
-                            <Text style={styles.textButton}> Registrarse </Text>
+                <ScrollView style={{ backgroundColor: '#ecfcff' }} >
+                    <Container style={{ alignItems: 'center', marginTop: '3%' }}>
+                        <Text style={stylesRegister.subTitle}> Por favor, completa todos los campos. </Text>
+                        <TextInput style={stylesRegister.textInput1} autoFocus={true} placeholderTextColor='grey' placeholder='Nombre*' onChangeText={(text) => this.setState({ Name: text })} onSubmitEditing={(event) => { this.refs.lastname.focus(); }} ref='name' />
+                        <TextInput style={stylesRegister.textInput1} placeholderTextColor='grey' placeholder='Apellido*' onChangeText={(text) => this.setState({ LastName: text })} ref='lastname' onSubmitEditing={(event) => { this.refs.edad.focus(); }} />
+                        <TextInput style={stylesRegister.textInput1} placeholderTextColor='grey' keyboardType='numeric' placeholder='Edad*' onChangeText={(text) => this.setState({ Age: text })} onSubmitEditing={(event) => { this.refs.username.focus(); }} ref='edad' />
+                        <TextInput style={stylesRegister.textInput1} placeholderTextColor='grey' placeholder='Usuario*' onChangeText={(text) => this.setState({ UserName: text })} onSubmitEditing={(event) => { this.refs.password.focus(); }} ref='username' />
+                        <TextInput style={stylesRegister.textInput1} secureTextEntry={true} placeholderTextColor='grey' placeholder='Contraseña*' onChangeText={(text) => this.setState({ Password: text })} ref='password' />
+                        <TouchableHighlight onPress={(this.onRegister.bind(this))} style={stylesLogin.button} ref='registrarse'>
+                            <Text style={{ color: 'white' }}> Registrarse </Text>
                         </TouchableHighlight>
-                    </View>
+                    </Container>
                 </ScrollView>
             </View >
         );
     }
-    vaciarFormulario() {
+    vaciarFormulario() {// vacia el formulario
         this.refs.name.value = ''
         this.refs.lastname.value = ''
         this.refs.edad.value = ''
         this.refs.username.value = ''
         this.refs.password.value = ''
     }
-    onRegister() {
+    onRegister() {//realiza un query a la base de datos para añadir un nuevo usuario.
         const { Name } = this.state;
         const { LastName } = this.state;
         const { Age } = this.state;
@@ -67,10 +69,8 @@ class RegisterUser extends Component {
                     buttonText: 'Ok', position: 'bottom',
                     type: "warning", onClose: () => { console.log('pero que ha pasao') },
                     duration: 30000,
-
                 }
             )
-
         } else {
             if (!isNaN(Age)) {
                 this.vaciarFormulario
@@ -86,19 +86,8 @@ class RegisterUser extends Component {
                                         buttonText: 'Ok', position: 'bottom',
                                         type: "success", onClose: () => { this.props.navigation.goBack() },
                                         duration: 30000,
-
                                     }
                                 )
-                                /*Alert.alert(
-                                    'Success',
-                                    'You are Registered Successfuly',
-                                    [
-                                        {
-                                            text: 'Ok',
-                                            onPress: () => this.props.navigation.goBack()
-                                        }
-                                    ]
-                                );*/
                             } else {
                                 Toast.show(
                                     {
@@ -127,60 +116,7 @@ class RegisterUser extends Component {
         }
     }
 }
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#ecfcff',
-        // flexDirection: 'column'
-    },
-    title2: {
-        marginTop: 30,
-        fontSize: 15,
-        color: 'black',
-    },
-    title: {
-        flex: 1,
-        marginTop: 13,
-        fontSize: 20,
-        color: 'black',
-        marginLeft: (width / 2) - 60,
-    },
-    textIn1: {
-        marginTop: 20,
-        width: 270,
-        height: 40,
-        borderBottomWidth: 2,
-        color: 'black',
-        borderBottomColor: 'grey'
-    },
-    textIn: {
-        marginTop: 35,
-        width: 270,
-        height: 40,
-        borderBottomWidth: 2,
-        color: 'black',
-        borderBottomColor: 'grey'
-    },
-    body: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    button: {
-        width: 250,
-        height: 40,
-        backgroundColor: '#3e64ff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 35,
-        marginBottom: 10,
-        borderRadius: 20,
-        borderWidth: 1
-    },
-    textButton: {
-        color: '#F5F5DC',
-    },
-})
+
 const mapStateToProps = (state) => {
     return {
         db: state.db
