@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Text, Alert, View, TextInput, ScrollView, TouchableHighlight } from 'react-native';
+import { Text, Alert, View, TextInput, ScrollView, TouchableHighlight, Image } from 'react-native';
 import { connect } from 'react-redux'
-import { Header, Right, Toast, Container } from 'native-base'
+import { Toast, Container } from 'native-base'
 import Feather from 'react-native-vector-icons/Feather'
 
 //styles
-const stylesRegister = require("../Styles/RegisterStyles")
-const stylesLogin = require("../Styles/LoginStyles")
-
+const stylesRegister = require('../Styles/RegisterStyles');
+const stylesLogin = require('../Styles/LoginStyles');
 
 class RegisterUser extends Component {
     constructor() {
@@ -23,25 +22,24 @@ class RegisterUser extends Component {
     render() {
         return (
             <View style={stylesRegister.container} >
-                <Header transparent>
-                    <Text style={stylesRegister.title}> Sing Up  </Text>
-                    <Right>
-                        <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: '40%', alignItems: 'center' }} onPress={() => { this.props.navigation.goBack() }}>
-                            <Feather name='x-circle' size={25} />
-                        </TouchableHighlight>
-                    </Right>
-                </Header >
-                <ScrollView style={{ backgroundColor: '#ecfcff' }} >
-                    <Container style={{ alignItems: 'center', marginTop: '3%' }}>
-                        <Text style={stylesRegister.subTitle}> Por favor, completa todos los campos. </Text>
-                        <TextInput style={stylesRegister.textInput1} autoFocus={true} placeholderTextColor='grey' placeholder='Nombre*' onChangeText={(text) => this.setState({ Name: text })} onSubmitEditing={(event) => { this.refs.lastname.focus(); }} ref='name' />
-                        <TextInput style={stylesRegister.textInput1} placeholderTextColor='grey' placeholder='Apellido*' onChangeText={(text) => this.setState({ LastName: text })} ref='lastname' onSubmitEditing={(event) => { this.refs.edad.focus(); }} />
-                        <TextInput style={stylesRegister.textInput1} placeholderTextColor='grey' keyboardType='numeric' placeholder='Edad*' onChangeText={(text) => this.setState({ Age: text })} onSubmitEditing={(event) => { this.refs.username.focus(); }} ref='edad' />
-                        <TextInput style={stylesRegister.textInput1} placeholderTextColor='grey' placeholder='Usuario*' onChangeText={(text) => this.setState({ UserName: text })} onSubmitEditing={(event) => { this.refs.password.focus(); }} ref='username' />
-                        <TextInput style={stylesRegister.textInput1} secureTextEntry={true} placeholderTextColor='grey' placeholder='Contraseña*' onChangeText={(text) => this.setState({ Password: text })} ref='password' />
-                        <TouchableHighlight onPress={(this.onRegister.bind(this))} style={stylesLogin.button} ref='registrarse'>
-                            <Text style={{ color: 'white' }}> Registrarse </Text>
-                        </TouchableHighlight>
+                <Image style={[stylesLogin.fondo, { position: 'absolute', top: 0, height: '80%', width: '100%' }]} imageStyle={{ resizeMode: 'center', height: '25%', width: '100%' }} source={require('../../assets/images/FONDO.png')} />
+                <ScrollView style={[{ width: '100%', }]}>
+                    <Container style={{ backgroundColor: 'transparent', justifyContent: "center", position: 'absolute', top: 0, }}>
+                        <View style={[stylesLogin.box, { marginTop: 0 }]}>
+                            <Image style={{ height: 80, width: 80, position: 'relative', top: -70, borderRadius: 50 }} source={require('../../assets/images/userReg.png')} />
+                            <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: 40, alignItems: 'center', position: 'relative', top: -108, left: '44%', }} onPress={() => { this.props.navigation.goBack() }}>
+                                <Feather name='x-circle' size={25} />
+                            </TouchableHighlight>
+                            <Text style={stylesRegister.subTitle}> Por favor, completa todos los campos. </Text>
+                            <TextInput style={[stylesLogin.textInput, { marginTop: -65 }]} autoFocus={true} placeholderTextColor='grey' placeholder='Nombre*' onChangeText={(text) => this.setState({ Name: text })} onSubmitEditing={(event) => { this.refs.lastname.focus(); }} ref='name' />
+                            <TextInput style={stylesLogin.textInput} placeholderTextColor='grey' placeholder='Apellido*' onChangeText={(text) => this.setState({ LastName: text })} ref='lastname' onSubmitEditing={(event) => { this.refs.edad.focus(); }} />
+                            <TextInput style={stylesLogin.textInput} placeholderTextColor='grey' keyboardType='numeric' placeholder='Edad*' onChangeText={(text) => this.setState({ Age: text })} onSubmitEditing={(event) => { this.refs.username.focus(); }} ref='edad' />
+                            <TextInput style={stylesLogin.textInput} placeholderTextColor='grey' placeholder='Usuario*' onChangeText={(text) => this.setState({ UserName: text })} onSubmitEditing={(event) => { this.refs.password.focus(); }} ref='username' />
+                            <TextInput style={stylesLogin.textInput} secureTextEntry={true} placeholderTextColor='grey' placeholder='Contraseña*' onChangeText={(text) => this.setState({ Password: text })} ref='password' />
+                            <TouchableHighlight onPress={(this.onRegister.bind(this))} style={stylesLogin.button} ref='registrarse'>
+                                <Text style={{ color: 'white' }}> Registrarse </Text>
+                            </TouchableHighlight>
+                        </View>
                     </Container>
                 </ScrollView>
             </View >

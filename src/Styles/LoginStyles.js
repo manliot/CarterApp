@@ -1,57 +1,62 @@
 import { StyleSheet, Dimensions } from 'react-native'
 
 const styles = StyleSheet.create({
+    fondo: {
+
+    },
     container: {
-        flex: 1,
-        alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#ecfcff',
+        backgroundColor: 'transparent',
+        height: '100%',
     },
     title: {
         fontSize: 50,
-        color: '#3e64ff',
-        fontWeight: 'bold'
+        color: 'white',
+        fontFamily: 'LilitaOne-Regular',
+        textAlign: 'center',
+        marginTop: '30%'
     },
-    textInput1: {
-        marginTop: (Dimensions.get('window').height * 100) / 730,
-        width: '75%',
-        height: (Dimensions.get('window').height * 40) / 720,
-        borderBottomWidth: 2,
-        color: 'black',
-        borderBottomColor: 'grey'
+    box: {
+        alignItems: 'center',
+        marginTop: (Dimensions.get('window').height * 50) / 730,
+        paddingTop: 30,
+        paddingBottom: 45,
+        marginLeft: '10%',
+        marginRight: '10%',
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        elevation: 5,
     },
-    textInput2: {
-        marginTop: '15%',
+    textForm: {
+        fontSize: 16,
+        color: '#2c3e50',
+        marginBottom: 10,
+        fontFamily: 'Roboto-Light',
+        fontWeight: "500",
+        textAlign: 'center',
+        marginTop: -70
+    },
+    textInput: {
         width: '75%',
-        height: (Dimensions.get('window').height * 40) / 720,
-        borderBottomWidth: 2,
+        height: 40,
         color: 'black',
-        borderBottomColor: 'grey'
+        backgroundColor: '#f2f2f2',
+        borderRadius: 8,
+        padding: 1.5,
+        marginBottom: 15,
+        fontFamily: 'Roboto-Light',
     },
     button: {
         width: '65%',
         height: 40,
-        backgroundColor: '#3e64ff',
+        backgroundColor: '#65d359',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 50,
-        marginBottom: 10,
         borderRadius: 20,
-        borderWidth: 1
     },
     textButton: {
         color: 'gray',
-    },
-    versionView: {
-        flex: 0.08,
-        alignItems: 'flex-end',
-        justifyContent: 'flex-end',
-        width: '100%',
-    },
-    version: {
-        fontSize: 11,
-        color: 'grey',
-        backgroundColor: '#ecfcff'
-    },
+        fontFamily: 'Roboto-Light',
+    }
 })
 module.exports = styles;

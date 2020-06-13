@@ -1,7 +1,7 @@
 
 //Imports Components
 import React, { Component } from 'react'
-import { View, Text, TouchableWithoutFeedback, TouchableHighlight, Alert, TextInput, ScrollView } from 'react-native'
+import { ImageBackground, View, Text, Image, TouchableWithoutFeedback, TouchableHighlight, Alert, TextInput, ScrollView, Dimensions } from 'react-native'
 import { Container, Content } from 'native-base'
 import { connect } from 'react-redux'
 
@@ -25,25 +25,30 @@ class LoginView extends Component {
     }
     render() {
         return (
-            <Content style={{ backgroundColor: '#ecfcff' }}>
-                <ScrollView>
-                    <Container style={styles.container}>
-                        <Text style={styles.title}>CarterAPP</Text>
-                        {/*  onChangeText: update the state with the text in the textInput*/}
-                        <TextInput style={styles.textInput1} placeholderTextColor='grey' placeholder='Usuario' onChangeText={(text) => this.setState({ usuario: text })} onSubmitEditing={(event) => { this.refs.contraseña.focus(); }} />
-                        <TextInput secureTextEntry={true} style={styles.textInput2} placeholderTextColor='grey' placeholder='Contraseña' onChangeText={(text) => this.setState({ contraseña: text })} ref='contraseña' onSubmitEditing={this.onLogin.bind(this)} />
-                        <TouchableHighlight onPress={(this.onLogin.bind(this))} style={styles.button}>
-                            <Text style={{ color: 'white' }}> Log in </Text>
-                        </TouchableHighlight>
-                        <TouchableWithoutFeedback onPress={(this.onRegister.bind(this))} style={styles.buttonRegister}>
-                            <Text style={styles.textButton}>No estas Registrado? Click aqui</Text>
-                        </TouchableWithoutFeedback>
+            <Content>
+                <ScrollView  >
+                    <Container >
+                        <ImageBackground style={styles.fondo} imageStyle={{ resizeMode: 'cover', height: '70%' }} source={require('../../assets/images/FONDO.png')} >
+                            <View style={styles.container}>
+                                {/* <Text style={styles.title}>Caplist</Text> */}
+                                <Image style={{ height: 120, width: 265, backgroundColor: 'transparent', marginLeft: ((Dimensions.get('window').width) - 265)/2 }} source={require('../../assets/images/logo_Login.png')} />
+                                {/*  onChangeText: update the state with the text in the textInput*/}
+                                <View style={styles.box}>
+                                    <Image style={{ height: 80, width: 80, position: 'relative', top: -70, borderRadius: 50 }} source={require('../../assets/images/user.png')} />
+                                    <Text style={styles.textForm}>Ingresa</Text>
+                                    <TextInput style={styles.textInput} placeholderTextColor='grey' placeholder='Usuario' onChangeText={(text) => this.setState({ usuario: text })} onSubmitEditing={(event) => { this.refs.contraseña.focus(); }} />
+                                    <TextInput secureTextEntry={true} style={styles.textInput} placeholderTextColor='grey' placeholder='Contraseña' onChangeText={(text) => this.setState({ contraseña: text })} ref='contraseña' onSubmitEditing={this.onLogin.bind(this)} />
+                                    <TouchableHighlight onPress={(this.onLogin.bind(this))} style={styles.button}>
+                                        <Text style={{ color: 'white' }}> Log in </Text>
+                                    </TouchableHighlight>
+                                    <TouchableWithoutFeedback onPress={(this.onRegister.bind(this))} style={styles.buttonRegister}>
+                                        <Text style={styles.textButton}>No estas Registrado? Click aqui</Text>
+                                    </TouchableWithoutFeedback>
+                                </View>
+                            </View>
+                        </ImageBackground>
                     </Container>
                 </ScrollView>
-                <View style={styles.versionView}>
-                    <Text style={styles.version}>V 1.0</Text>
-                    <Text style={styles.version} >By: Manlio Tejeda</Text>
-                </View>
             </Content>
         )
     }

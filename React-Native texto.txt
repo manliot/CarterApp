@@ -11,28 +11,77 @@ Objetivo:
 APP:
 
 	*Al comenzar se mostrara el monto total de:
-		1.¿Cuanto debes? y cuantas personas.
+		1.ï¿½Cuanto debes? y cuantas personas.
 
-		2.¿Cuanto te deben? y cuantas personas.
+		2.ï¿½Cuanto te deben? y cuantas personas.
 
-		3.¿Cuanto deberias tener en tu cartera fisica?
+		3.ï¿½Cuanto deberias tener en tu cartera fisica?
 
 	*Debera mostrar una lista de lo que te deben conpuesta por (MONTO, CONCEPTO, NOMBRE).
 
 	*Debera mostrar un menu desplegable con las opciones de:
 		1.mostrar a quienes debo.
-		2.añadir un deudor.
+		2.aï¿½adir un deudor.
 		3.borrar una cuenta (con opcion de decir la razon).
-		4.añadir una nueva deuda mia
+		4.aï¿½adir una nueva deuda mia
 		5.Borrar una deuda mia (Con la opcion de dar la razon).
 	
 
 EXTRA:
 	1.Manejar el acceso a los datos en la nube de tal forma que por medio de un login en cualquier dispositivo pueda 		acceder a los datos o manejarlos con la cuenta de google.
-	2.Poder añadir contactos de forma que las dos carteras esten sincronizadas.
+	2.Poder aï¿½adir contactos de forma que las dos carteras esten sincronizadas.
 	3.
 
 
 
+cd android
+
+.\gradlew clean
+
+cd ..
+
+npm cache clean --
+
+build.gradle
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        buildToolsVersion = "28.0.3"
+        minSdkVersion = 16
+        compileSdkVersion = 28
+        targetSdkVersion = 28
+    }
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:3.4.2")
+        
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+      
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url("$rootDir/../node_modules/react-native/android")
+        }
+        maven {
+            // Android JSC is installed from npm
+            url("$rootDir/../node_modules/jsc-android/dist")
+        }
+
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
 
 
