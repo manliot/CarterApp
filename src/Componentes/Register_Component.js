@@ -23,8 +23,8 @@ class RegisterUser extends Component {
         return (
             <View style={stylesRegister.container} >
                 <Image style={[stylesLogin.fondo, { position: 'absolute', top: 0, height: '80%', width: '100%' }]} imageStyle={{ resizeMode: 'center', height: '25%', width: '100%' }} source={require('../../assets/images/FONDO.png')} />
-                <ScrollView style={[{ width: '100%', }]}>
-                    <Container style={{ backgroundColor: 'transparent', justifyContent: "center", position: 'absolute', top: 0, }}>
+                <ScrollView style={[{ width: '100%', position: 'absolute', top: 0 }]}>
+                    <Container style={{ backgroundColor: 'transparent', justifyContent: "center"}}>
                         <View style={[stylesLogin.box, { marginTop: 0 }]}>
                             <Image style={{ height: 80, width: 80, position: 'relative', top: -70, borderRadius: 50 }} source={require('../../assets/images/userReg.png')} />
                             <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: 40, alignItems: 'center', position: 'relative', top: -108, left: '44%', }} onPress={() => { this.props.navigation.goBack() }}>

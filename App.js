@@ -25,6 +25,7 @@ import NewPrestamo_o_Deuda from './src/Componentes/NewPrestamo_o_Deuda'
 import Componente_Lista from './src/Componentes/Componente_Lista'
 import Cartera from './src/Componentes/Cartera'
 import MasDetalesItem from './src/Componentes/masDetalesItem'
+import NewPricipal from './src/Componentes/NewPricipal'
 
 /*============================================================
 this aplication have this navigation structure:
@@ -58,9 +59,9 @@ const AppTabNavigator = createBottomTabNavigator({
     },
   },
   cartera: {
-    screen: Cartera,
+    screen: NewPricipal,
     navigationOptions: {
-      tabBarLabel: "Cartera",
+      headerShown: false,
       tabBarIcon: ({ tintColor }) => (
         <SimpleLineIcons name='wallet' size={25} />
       )
@@ -94,9 +95,10 @@ const AppStackNavigator = createStackNavigator({
     screen: AppTabNavigator,
     navigationOptions: ({ navigation }) => {
       return {
-        headerLeft: () => (
-          <Feather name="menu" style={{ paddingLeft: 10, marginLeft: 4 }} onPress={() => navigation.openDrawer()} color='black' size={25} />
-        )
+        headerShown: false
+        /*   headerLeft: () => (
+            <Feather name="menu" style={{ paddingLeft: 10, marginLeft: 4 }} onPress={() => navigation.openDrawer()} color='black' size={25} />
+          ) */
       }
     }
   },
