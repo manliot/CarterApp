@@ -7,7 +7,7 @@ import { Button } from 'native-base';
 
 const h = Dimensions.get('window').height;
 const w = Dimensions.get('window').width
-const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
 
 class NewPricipal extends Component {
     render() {

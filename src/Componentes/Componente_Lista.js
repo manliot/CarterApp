@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableHighlight, FlatList, Dimensions, Alert, } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import { Header, Left, Right, Body, Title, Icon, Container, } from 'native-base'
+import { Container, } from 'native-base'
 import Feather from 'react-native-vector-icons/Feather'
 import 'intl';
 import 'intl/locale-data/jsonp/en'; // or any other locale you need
@@ -12,9 +12,7 @@ import { connect } from 'react-redux'
 import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
 
 //scenes
-import InfoGeneral from './InfoGeneral'
 import { NavigationEvents } from 'react-navigation';
-import { HeaderTitle } from 'react-navigation-stack'
 
 const formatter = new Intl.NumberFormat('es-CO', {
     style: "currency", currency: "COP", minimumFractionDigits: 0
@@ -85,16 +83,6 @@ class listaPrestamos extends Component {
         const { navigation } = this.props;
         return (
             <Container>
-                <Header style={{ backgroundColor: '#5173FF', borderBottomWidth: 1.5, borderBottomColor: 'grey', }}>
-                    <Text style={styles.title}> Sing Up  </Text>
-                    <Right>
-                        <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: 40, alignItems: 'center', }} onPress={() => { this.props.navigation.goBack() }}>
-                            <Feather name='x-circle' size={25} />
-                        </TouchableHighlight>
-                    </Right>
-
-                </Header >
-
                 <FlatList
                     ListHeaderComponent={
                         <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>

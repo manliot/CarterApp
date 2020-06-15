@@ -49,6 +49,7 @@ const AppTabNavigator = createBottomTabNavigator({
   ListaPrestamos: {
     screen: (props) => <Componente_Lista {...props} TypeList='DebenList' Txt='Tus Prestamos: ' quien='Le prestaste a' />,
     navigationOptions: {
+      headerShown: false,
       tabBarLabel: "lista de Prestamos",
       tabBarIcon: ({ tintColor }) => (
         <View style={styles.tabstyle}>
@@ -71,6 +72,7 @@ const AppTabNavigator = createBottomTabNavigator({
   ListaDeudas: {
     screen: (props) => <Componente_Lista {...props} TypeList='DeboList' Txt='Tus Deudas:' quien='Le debes a' />,
     navigationOptions: {
+      headerShown: false,
       tabBarLabel: "lista de Deudas",
       tabBarIcon: ({ tintColor }) => (
         <View style={styles.tabstyle}>
@@ -105,6 +107,7 @@ const AppStackNavigator = createStackNavigator({
   Detalles: {
     screen: MasDetalesItem,
     navigationOptions: {
+      headerShown: false,
       title: '',
       headerStyle: { backgroundColor: '#5173FF' },
       headerTintColor: '#ffffff',
