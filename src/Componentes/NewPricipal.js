@@ -1,42 +1,42 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, Dimensions, Image, ScrollView } from 'react-native'
+import { connect } from 'react-redux'
 
-import dimConverter from '../dimxPixels'
+import pixelConverter from '../dimxPixels'
 
-import styleLogin from '../Styles/LoginStyles'
+const h = Dimensions.get('window').height;
+const w = Dimensions.get('window').width
+const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
 
-const user = 'Manlio'
-export default class NewPricipal extends Component {
+class NewPricipal extends Component {
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Image style={{ height: dimConverter(88), width: dimConverter(88), position: 'absolute', top: dimConverter(7), right: dimConverter(20) }} source={require('../../assets/images/user.png')}></Image>
-                    <Text style={styles.text_saludo}>¡Hola {user}!</Text>
+                    <Image style={{ height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/user.png')}></Image>
+                    <Text style={styles.text_saludo}>¡Hola {this.props.usuario}!</Text>
                     <Text style={styles.text_resumen}>Este es tu resumen actual...</Text>
                 </View>
                 <View style={styles.body}>
-                    <View style={[styles.box, { marginTop: -dimConverter(138), height: '70%', borderRadius: dimConverter(32), width: dimConverter(529), paddingStart: dimConverter(55), paddingTop: dimConverter(46) }]}>
+                    <View style={[styles.box, {}]}>
                         <Text style={[styles.nombre_box]}>Principal</Text>
-                        <Text style={[styles.tex_deben_debes, { marginTop: 0 }]}>Te deben</Text>
-                        <Text style={[styles.text_valor]}>$400.000</Text>
+                        <Text style={[styles.tex_deben_debes, { marginTop: pixelConverter(49) }]}>Te deben</Text>
+                        <Text style={[styles.text_valor]}>{formatter.format(this.props.TotalDeben)}</Text>
                         <Text style={[styles.text_ver_detalles]}>VER DETALLES</Text>
                         <Text style={[styles.tex_deben_debes]}>Debes</Text>
-                        <Text style={[styles.text_valor]}>$400.000</Text>
+                        <Text style={[styles.text_valor]}>{formatter.format(this.props.TotalDebes)}</Text>
                         <Text style={[styles.text_ver_detalles]}>VER DETALLES</Text>
                     </View>
                     <View style={{ elevation: 10, }}>
-                        <Image style={{ height: dimConverter(132), width: dimConverter(132), marginTop: dimConverter(-65), position: 'absolute', left: dimConverter(195) }} source={require('../../assets/images/plus.png')}></Image>
+                        <Image style={{ height: pixelConverter(132), width: pixelConverter(132), marginTop: pixelConverter(-65), position: 'absolute', left: pixelConverter(195) }} source={require('../../assets/images/plus.png')}></Image>
                     </View>
                 </View>
-
             </View>
 
         )
     }
 }
-const h = Dimensions.get('window').height;
-const w = Dimensions.get('window').width
+
 const styles = StyleSheet.create({
     container: {
         height: '100%',
@@ -44,32 +44,32 @@ const styles = StyleSheet.create({
         backgroundColor: 'blue'
     },
     header: {
-        height: dimConverter(385),
+        height: pixelConverter(385),
         backgroundColor: '#65d359',
         color: 'white',
         alignItems: 'center'
     },
     nombre_box: {
         textAlign: 'right',
-        marginRight: dimConverter(34),
+        marginRight: pixelConverter(34),
         color: '#998787',
-        fontSize: dimConverter(30),
+        fontSize: pixelConverter(30),
         fontFamily: 'Roboto-Regular'
     },
     text_saludo: {
-        top: dimConverter(95),
+        top: pixelConverter(95),
         position: 'absolute',
-        width: dimConverter(529),
+        width: pixelConverter(529),
         color: 'white',
-        fontSize: dimConverter(50),
+        fontSize: pixelConverter(50),
         fontFamily: 'Roboto-Regular'
     },
     text_resumen: {
-        top: dimConverter(159),
+        top: pixelConverter(159),
         position: 'absolute',
-        width: dimConverter(529),
+        width: pixelConverter(529),
         color: 'white',
-        fontSize: dimConverter(28),
+        fontSize: pixelConverter(28),
         fontFamily: 'Roboto-Regular'
     },
     body: {
@@ -82,25 +82,44 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 8,
         elevation: 5,
+        marginTop: -pixelConverter(138),
+        height: '70%',
+        borderRadius: pixelConverter(32),
+        width: pixelConverter(529),
+        paddingStart: pixelConverter(55),
+        paddingTop: pixelConverter(46)
     },
     tex_deben_debes: {
-        marginTop: dimConverter(55),
+        marginTop: pixelConverter(55),
         color: '#6F6C6C',
-        fontSize: dimConverter(36),
+        fontSize: pixelConverter(36),
         fontFamily: 'Roboto-Regular'
     },
     text_valor: {
-        marginTop: dimConverter(24),
+        marginTop: pixelConverter(24),
         color: '#383737',
-        fontSize: dimConverter(50),
+        fontSize: pixelConverter(50),
         fontFamily: 'Roboto-Regular'
     },
     text_ver_detalles: {
-        marginTop: dimConverter(6),
+        marginTop: pixelConverter(6),
         color: '#0A90FB',
-        fontSize: dimConverter(30),
+        fontSize: pixelConverter(30),
         fontWeight: 'bold',
         fontFamily: 'Roboto-Bold'
     }
 
 })
+
+const mapStateToProps = (state) => {
+    return {
+        db: state.db,
+        nombre: state.nombre,
+        usuario: state.usuario,
+        TotalDeben: state.debenT,
+        TotalDebes: state.debesT,
+        TotalCartera: state.cartera,
+        ultimaVez: state.ultimaVez
+    }
+}
+export default connect(mapStateToProps)(React.memo(NewPricipal))
