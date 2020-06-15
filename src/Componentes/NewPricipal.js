@@ -22,10 +22,10 @@ class NewPricipal extends Component {
                         <Text style={[styles.nombre_box]}>Principal</Text>
                         <Text style={[styles.tex_deben_debes, { marginTop: pixelConverter(49) }]}>Te deben</Text>
                         <Text style={[styles.text_valor]}>{formatter.format(this.props.TotalDeben)}</Text>
-                        <Text style={[styles.text_ver_detalles]}>VER DETALLES</Text>
+                        <Text style={[styles.text_ver_detalles]} onPress={() => { this.props.navigation.navigate('ListaPrestamos') }}>VER DETALLES</Text>
                         <Text style={[styles.tex_deben_debes]}>Debes</Text>
                         <Text style={[styles.text_valor]}>{formatter.format(this.props.TotalDebes)}</Text>
-                        <Text style={[styles.text_ver_detalles]}>VER DETALLES</Text>
+                        <Text style={[styles.text_ver_detalles]} onPress={() => { this.props.navigation.navigate('ListaDeudas') }}>VER DETALLES</Text>
                     </View>
                     <View style={{ elevation: 10, }}>
                         <Image style={{ height: pixelConverter(132), width: pixelConverter(132), marginTop: pixelConverter(-65), position: 'absolute', left: pixelConverter(195) }} source={require('../../assets/images/plus.png')}></Image>
