@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Dimensions, Image, ScrollView } from 'react-nat
 import { connect } from 'react-redux'
 
 import pixelConverter from '../dimxPixels'
+import { Button } from 'native-base';
 
 const h = Dimensions.get('window').height;
 const w = Dimensions.get('window').width
@@ -28,7 +29,7 @@ class NewPricipal extends Component {
                         <Text style={[styles.text_ver_detalles]} onPress={() => { this.props.navigation.navigate('ListaDeudas') }}>VER DETALLES</Text>
                     </View>
                     <View style={{ elevation: 10, }}>
-                        <Image style={{ height: pixelConverter(132), width: pixelConverter(132), marginTop: pixelConverter(-65), position: 'absolute', left: pixelConverter(195) }} source={require('../../assets/images/plus.png')}></Image>
+                        <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ height: pixelConverter(132), width: pixelConverter(132), marginTop: pixelConverter(-65), position: 'absolute', left: pixelConverter(195) }} source={require('../../assets/images/plus.png')}></Image>
                     </View>
                 </View>
             </View>

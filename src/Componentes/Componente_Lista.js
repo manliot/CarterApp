@@ -98,7 +98,7 @@ class listaPrestamos extends Component {
                 <FlatList
                     ListHeaderComponent={
                         <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>
-                            <InfoGeneral style={styles.InfoGeneral} />
+                            {/* <InfoGeneral style={styles.InfoGeneral} /> */}
                             <NavigationEvents
                                 onWillFocus={payload => {
                                     if (this.props.refresh) {

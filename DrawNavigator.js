@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer'
-import { } from "react-navigation";
 
 //for menu (DrawNavigator)
 import NewDeuda from './src/Componentes/AddNewDeuda'
@@ -22,7 +21,6 @@ const AppDraweNavigator = createDrawerNavigator({
     }
 
 })
-
 class DreawNav extends Component {
     render() {
         return (

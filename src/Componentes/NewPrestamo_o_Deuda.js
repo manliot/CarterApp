@@ -23,12 +23,10 @@ class AddNewPrestamo extends Component {
                         <View style={{ backgroundColor: '#5564eb', alignItems: 'center', justifyContent: 'center', width: 35, height: 35, borderRadius: 60, marginTop: 13 }}>
                             <Feather name="menu" onPress={() => this.props.navigation.openDrawer()} color='white' size={25} />
                         </View>
-
                     </Left>
                     <Body>
                         <Text style={styles.title}> {this.props.scrn} </Text>
                     </Body>
-
                 </Header>
                 <ScrollView>
                     <Body>
@@ -43,7 +41,6 @@ class AddNewPrestamo extends Component {
             </Container>
         );
     }
-
     onAdd() {
         const date = new Date().getDate(); //Current Date
         const month = new Date().getMonth() + 1; //Current Month

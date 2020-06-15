@@ -214,9 +214,6 @@ export default class App extends Component {
     )
   }
 }
-
-
-
 const styles = StyleSheet.create({
   tabstyle: {
     flexDirection: 'row',
