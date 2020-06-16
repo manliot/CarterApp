@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, Dimensions, Image, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
+import { NavigationEvents } from 'react-navigation';
 
 import pixelConverter from '../dimxPixels'
 import { Button } from 'native-base';
@@ -13,6 +14,19 @@ class NewPricipal extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <NavigationEvents
+                    onWillFocus={payload => {
+                        if (this.props.refresh) {
+                            this.setState({
+                                refreshing: true,
+                            }, () => {
+                                this.props.RefreshFalse()
+                                this.getLista()
+                                this.getTotalMonto()
+                            })
+                        }
+                    }}
+                />
                 <View style={styles.header}>
                     <Image style={{ height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/user.png')}></Image>
                     <Text style={styles.text_saludo}>¡Hola {this.props.usuario}!</Text>

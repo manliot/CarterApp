@@ -68,7 +68,6 @@ const AppTabNavigator = createBottomTabNavigator({
       )
     }
   },
-
   ListaDeudas: {
     screen: (props) => <Componente_Lista {...props} TypeList='DeboList' Txt='Tus Deudas:' quien='Le debes a' />,
     navigationOptions: {
@@ -88,9 +87,8 @@ const AppTabNavigator = createBottomTabNavigator({
       headerTitle: 'CarterAPP',
       headerStyle: { backgroundColor: '#5173FF' },
       headerTintColor: '#ffffff',
-      //headerShown: false
     }
-  }
+  }, initialRouteName: 'cartera'
 })
 const AppStackNavigator = createStackNavigator({
   AppTabNavigtator: {
@@ -98,9 +96,6 @@ const AppStackNavigator = createStackNavigator({
     navigationOptions: ({ navigation }) => {
       return {
         headerShown: false
-        /*   headerLeft: () => (
-            <Feather name="menu" style={{ paddingLeft: 10, marginLeft: 4 }} onPress={() => navigation.openDrawer()} color='black' size={25} />
-          ) */
       }
     }
   },

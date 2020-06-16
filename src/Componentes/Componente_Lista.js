@@ -1,22 +1,19 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableHighlight, FlatList, Dimensions, Alert, } from 'react-native'
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, } from 'react-native'
 import { Container, } from 'native-base'
-import Feather from 'react-native-vector-icons/Feather'
+import { NavigationEvents } from 'react-navigation';
 import 'intl';
 import 'intl/locale-data/jsonp/en'; // or any other locale you need
 
 import { connect } from 'react-redux'
-
+import pixelConverter from '../dimxPixels'
 //actions
 import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
 
 //scenes
-import { NavigationEvents } from 'react-navigation';
 
-const formatter = new Intl.NumberFormat('es-CO', {
-    style: "currency", currency: "COP", minimumFractionDigits: 0
-})
+const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
+
 class listaPrestamos extends Component {
     populateDB(tx) {
         tx.executeSql('SELECT Monto FROM DebenList WHERE Usuario=?', [this.props.usuario], this.deben.bind(this));
@@ -86,26 +83,23 @@ class listaPrestamos extends Component {
                 <FlatList
                     ListHeaderComponent={
                         <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>
-                            {/* <InfoGeneral style={styles.InfoGeneral} /> */}
                             <NavigationEvents
                                 onWillFocus={payload => {
                                     if (this.props.refresh) {
                                         this.setState({
-                                            refreshing: true,
+                                            refreshing: true
                                         }, () => {
                                             this.props.RefreshFalse()
                                             this.getLista()
                                             this.getTotalMonto()
+                                            this.refs.myFlatList.scrollToEnd();
                                         })
                                     }
                                 }}
                             />
-                            <View style={styles.Titulo}>
-                                <Text style={styles.tex}>  {this.props.Txt} </Text>
-                            </View>
                         </View>
                     }
-                    style={{ flex: 1, backgroundColor: '#ecfcff' }}
+                    style={{ flex: 1, backgroundColor: '#B2E9AB' }}
                     ref='myFlatList'
                     data={this.state.FlatListItems}
                     renderItem={this.renderItemComponent}
@@ -114,29 +108,25 @@ class listaPrestamos extends Component {
                     onRefresh={this.UpdateList}
                 />
             </Container>
-
-
-
         );
     }
+    cambiarParaEXPANDIR(item) {
+        console.log(this);
+        this.setState({ item: item, expandir: !this.state.expandir, })
+    }
     renderItemComponent = ({ item }) => (//View de los items del FlatList
-        <View>
-            <View style={styles.lista}>
-                <View style={styles.ListaLeft}>
-                    <Text style={styles.tex2}> {this.props.quien}</Text>
-                    <Text style={styles.tex}> {item.Nombre} </Text>
-                </View>
-                <View style={styles.ListaRight}>
-                    <View style={styles.ListaSub2}>
-                        <Text style={styles.tex}>{formatter.format(item.Monto)} </Text>
+        <View style={styles.container_lista} >
+            <TouchableOpacity style={styles.touchableOpacity} onPress={() => this.setState({ item: item, expandir: !this.state.expandir, })} >
+                <View style={styles.lista} >
+                    <View style={styles.top} >
+                        <Text style={styles.tex2} > {this.props.quien}</Text>
+                        <Text style={styles.tex3}>{formatter.format(item.Monto)} </Text>
                     </View>
-                    <View style={styles.ListaSub}>
-                        <TouchableHighlight activeOpacity={1} underlayColor='#ecfcff' style={{ width: 40, alignItems: 'center', justifyContent: 'center' }} onPress={() => { this.setState({ expandir: !this.state.expandir, item: item }) }}>
-                            <AntDesign name='arrowright' size={20} />
-                        </TouchableHighlight>
+                    <View style={styles.bottom}>
+                        <Text style={styles.tex}> {item.Nombre} </Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
             {(item.Id == this.state.item.Id && this.state.expandir) && // se muestra cuando le doy click a el icono de expandir
                 this.GoDetails()
             }
@@ -155,15 +145,14 @@ class listaPrestamos extends Component {
         this.setState({ expandir: !this.state.expandir })
         this.props.navigation.navigate('Detalles', { item: this.state.item, TypeList: this.props.TypeList })
     }
-
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'blue'
     },
     InfoGeneral: {
         flex: 1,
@@ -175,17 +164,30 @@ const styles = StyleSheet.create({
         color: 'white',
         marginLeft: (Dimensions.get('window').width / 2) - 60,
     },
+    touchableOpacity: {
+        padding: 0,
+        borderRadius: pixelConverter(10),
+    },
     lista: {
-        marginTop: 15,
-        flexDirection: 'row',
+        marginTop: pixelConverter(27),
         backgroundColor: '#ecfcff',
-        marginLeft: 17.5,
-        width: Dimensions.get('window').width - 35,// si se cambia entonces cambiar en el gettConceptoview
-        height: 62,
-        borderWidth: 0.3,
-        color: 'grey',
-        borderBottomColor: 'grey',
-        borderRadius: 10,
+        paddingTop: pixelConverter(25),
+        paddingBottom: pixelConverter(18),
+        paddingEnd: pixelConverter(18),
+        paddingStart: pixelConverter(27),
+        width: Dimensions.get('window').width - 65,// si se cambia entonces cambiar en el gettConceptoview
+        height: pixelConverter(120),
+        borderRadius: pixelConverter(10),
+        elevation: 5,
+    },
+    top: {
+        flexDirection: 'row',
+    },
+    bottom: {
+        flexDirection: 'column'
+    },
+    container_lista: {
+        alignItems: 'center'
     },
     Concepto: {
         marginTop: 0,
@@ -208,15 +210,20 @@ const styles = StyleSheet.create({
         marginLeft: 12.5,
     },
     tex2: {
-        fontSize: 15,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-start',
+        color: '#6F6C6C',
+        fontSize: pixelConverter(27),
     },
     tex: {
+        fontSize: pixelConverter(33),
+        color: '#65D359',
+        fontFamily: 'Roboto-Bold'
+    },
+    tex3: {
         fontSize: 16,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-start',
-        fontWeight: 'bold'
+        alignItems: 'flex-end',
+        fontFamily: 'Roboto-Bold',
+        flex: 1,
+        textAlign: 'right'
     },
     Titulo: {
         backgroundColor: '#ecfcff',
