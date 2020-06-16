@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, } from 'react-native'
-import { Container, } from 'native-base'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native'
+import { Container, Header } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
 import 'intl';
 import 'intl/locale-data/jsonp/en'; // or any other locale you need
@@ -9,6 +9,8 @@ import { connect } from 'react-redux'
 import pixelConverter from '../dimxPixels'
 //actions
 import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
+import dimxPixels from '../dimxPixels';
+import { TextInput } from 'react-native-gesture-handler';
 
 //scenes
 
@@ -80,6 +82,15 @@ class listaPrestamos extends Component {
         const { navigation } = this.props;
         return (
             <Container>
+                <Header style={styles.header}>
+                    <View style={styles.search}>
+                        <Image style={{ height: pixelConverter(40), width: pixelConverter(40), left: pixelConverter(25), }} source={require('../../assets/images/search.png')}></Image>
+                        <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(545), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }} placeholderTextColor='#F0F0F0' placeholder='Buscar'>
+
+                        </TextInput>
+                    </View>
+                    <Image style={{ height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
+                </Header>
                 <FlatList
                     ListHeaderComponent={
                         <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>
@@ -107,7 +118,10 @@ class listaPrestamos extends Component {
                     refreshing={this.state.refreshing}
                     onRefresh={this.UpdateList}
                 />
-            </Container>
+                <View style={{ elevation: 10, width: '100%' }}>
+                    <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ height: pixelConverter(132), width: pixelConverter(132), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(15), bottom: pixelConverter(25) }} source={require('../../assets/images/plus.png')}></Image>
+                </View>
+            </Container >
         );
     }
     cambiarParaEXPANDIR(item) {
@@ -154,6 +168,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'blue'
     },
+    header: {
+        backgroundColor: '#B2E9AB',
+        alignItems: 'center',
+        justifyContent: 'flex-start'
+    },
+    search: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingStart: pixelConverter(14),
+        width: pixelConverter(545),// si se cambia entonces cambiar en el gettConceptoview
+        backgroundColor: '#a7a9a3',
+        height: pixelConverter(70),
+        borderRadius: pixelConverter(10),
+        marginStart: '7%',
+    },
     InfoGeneral: {
         flex: 1,
         width: Dimensions.get('window').width
@@ -182,9 +212,11 @@ const styles = StyleSheet.create({
     },
     top: {
         flexDirection: 'row',
+        justifyContent: 'flex-start'
     },
     bottom: {
-        flexDirection: 'column'
+        flexDirection: 'column',
+        justifyContent: 'flex-start'
     },
     container_lista: {
         alignItems: 'center'

@@ -42,8 +42,8 @@ class NewPricipal extends Component {
                         <Text style={[styles.text_valor]}>{formatter.format(this.props.TotalDebes)}</Text>
                         <Text style={[styles.text_ver_detalles]} onPress={() => { this.props.navigation.navigate('ListaDeudas') }}>VER DETALLES</Text>
                     </View>
-                    <View style={{ elevation: 10, }}>
-                        <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ height: pixelConverter(132), width: pixelConverter(132), marginTop: pixelConverter(-65), position: 'absolute', left: pixelConverter(195) }} source={require('../../assets/images/plus.png')}></Image>
+                    <View style={{ elevation: 10, backgroundColor: 'blue' }}>
+                        <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ height: pixelConverter(132), width: pixelConverter(132), position: 'absolute', right: pixelConverter(15), bottom: pixelConverter(0) }} source={require('../../assets/images/plus.png')}></Image>
                     </View>
                 </View>
             </View>
