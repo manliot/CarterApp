@@ -4,18 +4,17 @@ import { Container, Header } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
 import 'intl';
 import 'intl/locale-data/jsonp/en'; // or any other locale you need
-
+import Moment from 'moment';
 import { connect } from 'react-redux'
 import pixelConverter from '../dimxPixels'
-//actions
+
 import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
-import dimxPixels from '../dimxPixels';
 import { TextInput } from 'react-native-gesture-handler';
 
 //scenes
 
 const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
-
+let Fecha
 class listaPrestamos extends Component {
     populateDB(tx) {
         tx.executeSql('SELECT Monto FROM DebenList WHERE Usuario=?', [this.props.usuario], this.deben.bind(this));
@@ -45,6 +44,7 @@ class listaPrestamos extends Component {
             refreshing: false,
             expandir: false,//usado para controlar cuando mostar el CONCEPTO
             item: '',// usado para obtener el id del item seleccionado (flatlist)
+            Fecha: ''
         }
     }
     componentDidMount() {
@@ -83,11 +83,13 @@ class listaPrestamos extends Component {
         return (
             <Container>
                 <Header style={styles.header}>
-                    <View style={styles.search}>
-                        <Image style={{ height: pixelConverter(40), width: pixelConverter(40), left: pixelConverter(25), }} source={require('../../assets/images/search.png')}></Image>
-                        <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(545), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }} placeholderTextColor='#F0F0F0' placeholder='Buscar' />
+                    <View style={{ width: Dimensions.get('window').width - 65, alignItems: 'flex-start' }}>
+                        <View style={styles.search}>
+                            <Image style={{ height: pixelConverter(40), width: pixelConverter(40), left: pixelConverter(25), }} source={require('../../assets/images/search.png')}></Image>
+                            <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(545), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }} placeholderTextColor='#F0F0F0' placeholder='Buscar' />
+                        </View>
                     </View>
-                    <Image style={{ height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
+                    <Image imageStyle={{}} style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
                 </Header>
                 <FlatList
                     ListHeaderComponent={
@@ -111,39 +113,60 @@ class listaPrestamos extends Component {
                     style={{ flex: 1, backgroundColor: '#B2E9AB' }}
                     ref='myFlatList'
                     data={this.state.FlatListItems}
-                    renderItem={this.renderItemComponent}
+                    renderItem={this.renderItemComponent.bind(this)}
                     keyExtractor={item => 'i' + item.Id}
                     refreshing={this.state.refreshing}
                     onRefresh={this.UpdateList}
                 />
-                <View style={{ elevation: 10, width: '100%' }}>
-                    <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ height: pixelConverter(132), width: pixelConverter(132), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(15), bottom: pixelConverter(25) }} source={require('../../assets/images/plus.png')}></Image>
-                </View>
+                <TouchableOpacity style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} onPress={() => this.based()} >
+                    <Image style={{ height: pixelConverter(120), width: pixelConverter(120), }} source={require('../../assets/images/plus.png')}></Image>
+                </TouchableOpacity>
             </Container >
         );
     }
-    cambiarParaEXPANDIR(item) {
-        console.log(this);
-        this.setState({ item: item, expandir: !this.state.expandir, })
+    cambiarfechas() {//cambiar fechas
+        this.props.db.transaction(tx => {
+            tx.executeSql('UPDATE DebenList SET Fecha = ? WHERE IDdeben==?', ["6/15/2020", 53],
+                (tx, res) => {
+                    for (let i = 0; i < res.rows.length; i++) {
+                        console.log(i + '): ' + res/* .rows.item(i) */)
+                    }
+                }, function (error) {
+                    console.log(error)
+                    // returnValue = false;
+                }, function (res) {
+                    console.log(res)
+                }
+            )
+        })
     }
-    renderItemComponent = ({ item }) => (//View de los items del FlatList
-        <View style={styles.container_lista} >
-            <TouchableOpacity style={styles.touchableOpacity} onPress={() => this.setState({ item: item, expandir: !this.state.expandir, })} >
-                <View style={styles.lista} >
-                    <View style={styles.top} >
-                        <Text style={styles.tex2} > {this.props.quien}</Text>
-                        <Text style={styles.tex3}>{formatter.format(item.Monto)} </Text>
+    renderItemComponent = (itemi) => {
+        const { item } = itemi
+        let igualFecha = false
+        if (item.Fecha != Fecha) {
+            igualFecha = true
+            Fecha = item.Fecha
+        }
+        return (//View de los items del FlatList
+            <View style={styles.container_lista} >
+                {igualFecha && (<Text style={styles.fecha}>{Moment(item.Fecha).format("DD MMM [de] YYYY")} </Text>)}
+                <TouchableOpacity style={styles.touchableOpacity} onPress={() => this.setState({ item: item, expandir: !this.state.expandir, })} >
+                    <View style={styles.lista} >
+                        <View style={styles.top} >
+                            <Text style={styles.tex2} > {this.props.quien}</Text>
+                            <Text style={styles.tex3}>{formatter.format(item.Monto)} </Text>
+                        </View>
+                        <View style={styles.bottom}>
+                            <Text style={styles.tex}> {item.Nombre} </Text>
+                        </View>
                     </View>
-                    <View style={styles.bottom}>
-                        <Text style={styles.tex}> {item.Nombre} </Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
-            {(item.Id == this.state.item.Id && this.state.expandir) && // se muestra cuando le doy click a el icono de expandir
-                this.GoDetails()
-            }
-        </View>
-    );
+                </TouchableOpacity>
+                {(item.Id == this.state.item.Id && this.state.expandir) && // se muestra cuando le doy click a el icono de expandir
+                    this.GoDetails()
+                }
+            </View>
+        )
+    };
     UpdateList = () => {
         this.setState({
             refreshing: true,
@@ -169,7 +192,7 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: '#B2E9AB',
         alignItems: 'center',
-        justifyContent: 'flex-start'
+        justifyContent: 'center'
     },
     search: {
         flexDirection: 'row',
@@ -180,7 +203,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#a7a9a3',
         height: pixelConverter(70),
         borderRadius: pixelConverter(10),
-        marginStart: '7%',
+        //marginStart: '7%',
     },
     InfoGeneral: {
         flex: 1,
@@ -192,6 +215,13 @@ const styles = StyleSheet.create({
         color: 'white',
         marginLeft: (Dimensions.get('window').width / 2) - 60,
     },
+    fecha: {
+        marginTop: pixelConverter(50),
+        marginBottom: pixelConverter(10),
+        color: '#959595',
+        fontSize: pixelConverter(28),
+
+    },
     touchableOpacity: {
         padding: 0,
         borderRadius: pixelConverter(10),
@@ -200,7 +230,7 @@ const styles = StyleSheet.create({
         marginTop: pixelConverter(27),
         backgroundColor: '#ecfcff',
         paddingTop: pixelConverter(25),
-        paddingBottom: pixelConverter(18),
+        paddingBottom: pixelConverter(20),
         paddingEnd: pixelConverter(18),
         paddingStart: pixelConverter(27),
         width: Dimensions.get('window').width - 65,// si se cambia entonces cambiar en el gettConceptoview
@@ -244,7 +274,7 @@ const styles = StyleSheet.create({
         fontSize: pixelConverter(27),
     },
     tex: {
-        fontSize: pixelConverter(33),
+        fontSize: pixelConverter(31),
         color: '#65D359',
         fontFamily: 'Roboto-Bold'
     },

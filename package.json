@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.5",
     "intl": "^1.2.5",
+    "moments": "0.0.2",
     "native-base": "^2.13.8",
     "react": "16.9.0",
     "react-icons": "^3.9.0",

@@ -46,7 +46,7 @@ class AddNewPrestamo extends Component {
         const month = new Date().getMonth() + 1; //Current Month
         const year = new Date().getFullYear(); //Current Year
         this.setState({
-            date: date + '/' + month + '/' + year  //date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
+            date: `${month}/${date}/${year}`
         });
         const { Monto } = this.state
         const { Nombre } = this.state
