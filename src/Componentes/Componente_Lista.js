@@ -1,42 +1,28 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native'
+import { TextInput } from 'react-native-gesture-handler';
 import { Container, Header } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
-import 'intl';
-import 'intl/locale-data/jsonp/en'; // or any other locale you need
 import Moment from 'moment';
+import 'intl';
+import 'intl/locale-data/jsonp/es-CO'; // or any other locale you need
+
+//redux
 import { connect } from 'react-redux'
+import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
+
 import pixelConverter from '../dimxPixels'
 
-import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
-import { TextInput } from 'react-native-gesture-handler';
-
-//scenes
-
-const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
+//sera usada para agrupar las box 
 let Fecha
+//formateo del monto formato estadounidense
+//const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
+const formatter = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0
+})
 class listaPrestamos extends Component {
-    populateDB(tx) {
-        tx.executeSql('SELECT Monto FROM DebenList WHERE Usuario=?', [this.props.usuario], this.deben.bind(this));
-        tx.executeSql('SELECT Monto FROM DeboList WHERE Usuario=?', [this.props.usuario], this.debes.bind(this));
-    }
-    deben(tx, res) {
-        let totalTem = 0;
-        for (let i = 0; i < res.rows.length; ++i) {
-            let item = res.rows.item(i); totalTem = totalTem + item.Monto;
-        }
-        this.props.UpdateDEBEN_(totalTem).bind(this)
-    }
-    debes = (tx, res) => {
-        let totalTem = 0;
-        for (let i = 0; i < res.rows.length; ++i) {
-            let item = res.rows.item(i); totalTem = totalTem + item.Monto;
-        }
-        this.props.UpdateDEBES_(totalTem).bind(this)
-    }
-    getTotalMonto = () => {
-        this.props.db.transaction(this.populateDB.bind(this))
-    }
     constructor() {
         super()
         this.state = {
@@ -44,19 +30,16 @@ class listaPrestamos extends Component {
             refreshing: false,
             expandir: false,//usado para controlar cuando mostar el CONCEPTO
             item: '',// usado para obtener el id del item seleccionado (flatlist)
-            Fecha: ''
         }
     }
     componentDidMount() {
         this.getLista();
-        this.getTotalMonto()
     }
     getLista = () => {
-        function ItemList(Id, Monto, Nombre, Concepto, Fecha) {
-            this.Id = Id, this.Monto = Monto, this.Nombre = Nombre, this.Concepto = Concepto, this.Fecha = Fecha
-        }
-        this.props.db.transaction(tx => {// se llena el flatlistItem con el resultado del query
-            tx.executeSql(`SELECT * FROM ${this.props.TypeList} WHERE Usuario=?`, [this.props.usuario],
+        // se llena el flatlistItem con el resultado del query
+        this.props.db.transaction(tx => {
+            tx.executeSql(`SELECT * FROM ${this.props.TypeList} WHERE Usuario=?`,
+                [this.props.usuario],
                 (tx, res) => {
                     var temp = new Array();
                     for (let i = 0; i < res.rows.length; ++i) {
@@ -66,91 +49,70 @@ class listaPrestamos extends Component {
                             Id = item.IDdeben
                         } else if (this.props.TypeList == 'DeboList') {
                             Id = item.IDdebo
-                        }
-                        let tempItem = new ItemList(Id, item.Monto, item.Nombre, item.Concepto, item.Fecha);
-                        temp[i] = tempItem;
+                        } else console.error('Faltan datos para poder llenar el componente')
+                        temp[i] = { ...item, Id }
                     }
-                    this.setState({
-                        FlatListItems: temp,
-                        refreshing: false
-                    });
-                })
+                    this.setState({ FlatListItems: temp, refreshing: false });
+                }, this.errorDB)
         })
     };
-
+    errorDB(error) {
+        console.error(error)
+    }
     render() {
-        const { navigation } = this.props;
         return (
             <Container>
                 <Header style={styles.header}>
-                    <View style={{ width: Dimensions.get('window').width - 65, alignItems: 'flex-start' }}>
+                    <View style={{ width: Dimensions.get('window').width - 63, alignItems: 'flex-start' }}>
                         <View style={styles.search}>
                             <Image style={{ height: pixelConverter(40), width: pixelConverter(40), left: pixelConverter(25), }} source={require('../../assets/images/search.png')}></Image>
                             <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(545), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }} placeholderTextColor='#F0F0F0' placeholder='Buscar' />
                         </View>
                     </View>
-                    <Image imageStyle={{}} style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
+                    <Image style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
                 </Header>
                 <FlatList
                     ListHeaderComponent={
-                        <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>
+                        <View>
                             <NavigationEvents
                                 onWillFocus={payload => {
                                     if (this.props.refresh) {
-                                        this.setState({
-                                            refreshing: true
-                                        }, () => {
+                                        this.setState({ refreshing: true }, () => {
                                             this.props.RefreshFalse()
                                             this.getLista()
-                                            this.getTotalMonto()
-                                            this.refs.myFlatList.scrollToEnd();
                                         })
                                     }
                                 }}
                             />
                         </View>
                     }
-                    style={{ flex: 1, backgroundColor: '#B2E9AB' }}
+                    style={{ backgroundColor: '#B2E9AB' }}
                     ref='myFlatList'
                     data={this.state.FlatListItems}
                     renderItem={this.renderItemComponent.bind(this)}
-                    keyExtractor={item => 'i' + item.Id}
+                    keyExtractor={item => `i${item.Id}`}
                     refreshing={this.state.refreshing}
                     onRefresh={this.UpdateList}
                 />
-                <TouchableOpacity style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} onPress={() => this.based()} >
+                <TouchableOpacity style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} onPress={() => null} >
                     <Image style={{ height: pixelConverter(120), width: pixelConverter(120), }} source={require('../../assets/images/plus.png')}></Image>
                 </TouchableOpacity>
             </Container >
         );
     }
-    cambiarfechas() {//cambiar fechas
-        this.props.db.transaction(tx => {
-            tx.executeSql('UPDATE DebenList SET Fecha = ? WHERE IDdeben==?', ["6/15/2020", 53],
-                (tx, res) => {
-                    for (let i = 0; i < res.rows.length; i++) {
-                        console.log(i + '): ' + res/* .rows.item(i) */)
-                    }
-                }, function (error) {
-                    console.log(error)
-                    // returnValue = false;
-                }, function (res) {
-                    console.log(res)
-                }
-            )
-        })
-    }
-    renderItemComponent = (itemi) => {
-        const { item } = itemi
-        let igualFecha = false
+    renderItemComponent = (itemObject) => {
+        const { item } = itemObject
+        let igualFecha = true
         if (item.Fecha != Fecha) {
-            igualFecha = true
+            igualFecha = false
             Fecha = item.Fecha
         }
         return (//View de los items del FlatList
             <View style={styles.container_lista} >
-                {igualFecha && (<Text style={styles.fecha}>{Moment(item.Fecha).format("DD MMM [de] YYYY")} </Text>)}
-                <TouchableOpacity style={styles.touchableOpacity} onPress={() => this.setState({ item: item, expandir: !this.state.expandir, })} >
+                {!igualFecha && (
+                    <Text style={styles.fecha}>{Moment(item.Fecha).format("DD MMM [de] YYYY")} </Text>
+                )}
+                <TouchableOpacity style={styles.touchableOpacity} onPress={() => this.setState({ item: item })} >
                     <View style={styles.lista} >
                         <View style={styles.top} >
                             <Text style={styles.tex2} > {this.props.quien}</Text>
@@ -161,23 +123,18 @@ class listaPrestamos extends Component {
                         </View>
                     </View>
                 </TouchableOpacity>
-                {(item.Id == this.state.item.Id && this.state.expandir) && // se muestra cuando le doy click a el icono de expandir
+                {(item.Id == this.state.item.Id) && // se muestra cuando le doy click a el icono de expandir
                     this.GoDetails()
                 }
             </View>
         )
     };
     UpdateList = () => {
-        this.setState({
-            refreshing: true,
-        }, () => {
+        this.setState({ refreshing: true }, () => {
             this.getLista()
-            this.getTotalMonto()
-        })
-        // this.refs.myFlatList.scrollToEnd();
+        })//this.refs.myFlatList.scrollToEnd();
     }
     GoDetails() {
-        this.setState({ expandir: !this.state.expandir })
         this.props.navigation.navigate('Detalles', { item: this.state.item, TypeList: this.props.TypeList })
     }
 }
@@ -203,24 +160,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#a7a9a3',
         height: pixelConverter(70),
         borderRadius: pixelConverter(10),
-        //marginStart: '7%',
-    },
-    InfoGeneral: {
-        flex: 1,
-        width: Dimensions.get('window').width
-    }, title: {
-        flex: 1,
-        marginTop: 13,
-        fontSize: 20,
-        color: 'white',
-        marginLeft: (Dimensions.get('window').width / 2) - 60,
     },
     fecha: {
         marginTop: pixelConverter(50),
         marginBottom: pixelConverter(10),
         color: '#959595',
         fontSize: pixelConverter(28),
-
     },
     touchableOpacity: {
         padding: 0,
@@ -249,34 +194,14 @@ const styles = StyleSheet.create({
     container_lista: {
         alignItems: 'center'
     },
-    Concepto: {
-        marginTop: 0,
-        flexDirection: 'row',
-        backgroundColor: '#b2fcff',
-        marginLeft: 17.5,
-        width: Dimensions.get('window').width - 35,
-        height: 100,
-        borderBottomWidth: 1.5,
-        color: 'grey',
-        borderBottomColor: 'grey',
-        borderRadius: 4,
-    },
-    ConceptoRight: {
-        flex: 1,
-        backgroundColor: 'blue'
-    },
-    ConceptoLeft: {
-        flex: 3,
-        marginLeft: 12.5,
-    },
-    tex2: {
-        color: '#6F6C6C',
-        fontSize: pixelConverter(27),
-    },
     tex: {
         fontSize: pixelConverter(31),
         color: '#65D359',
         fontFamily: 'Roboto-Bold'
+    },
+    tex2: {
+        color: '#6F6C6C',
+        fontSize: pixelConverter(27),
     },
     tex3: {
         fontSize: 16,
@@ -285,37 +210,7 @@ const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'right'
     },
-    Titulo: {
-        backgroundColor: '#ecfcff',
-        justifyContent: 'flex-end',
-        alignItems: 'flex-start'
-    },
-    ListaLeft: {
-        flex: 1,
-        alignContent: "center",
-    },
-    ListaSub: {
-        flex: 1.5,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
-    ListaSub2: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
-    ListaRight: {
-        flex: 1,
-        flexDirection: 'column',
-        alignContent: 'flex-end',
-    },
-    texabonar: {
-        marginTop: 0,
-        fontSize: 11,
-        color: 'black'
-    },
 })
-
 const mapStateToProps = (state) => {
     return {
         db: state.db,
