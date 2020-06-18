@@ -21,6 +21,8 @@ const initialState = {
     debesT: 0,
     cartera: 0,
     refresh: false,
+    refreshPrestamos: false,
+    refreshDeudas: false,
 }
 const reducerInfoGeneral = (state = initialState, action) => {
     switch (action.type) {
@@ -49,6 +51,26 @@ const reducerInfoGeneral = (state = initialState, action) => {
             return {
                 ...state,
                 refresh: action.val
+            }
+        case 'REFRESH_PRESTAMOS_TRUE':
+            return {
+                ...state,
+                refreshPrestamos: action.val
+            }
+        case 'REFRESH_PRESTAMOS_FALSE':
+            return {
+                ...state,
+                refreshPrestamos: action.val
+            }
+        case 'REFRESH_DEUDAS_TRUE':
+            return {
+                ...state,
+                refreshDeudas: action.val
+            }
+        case 'REFRESH_DEUDAS_FALSE':
+            return {
+                ...state,
+                refreshDeudas: action.val
             }
         default:
             return state

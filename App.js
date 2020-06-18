@@ -26,6 +26,7 @@ import Componente_Lista from './src/Componentes/Componente_Lista'
 import Cartera from './src/Componentes/Cartera'
 import MasDetalesItem from './src/Componentes/masDetalesItem'
 import NewPricipal from './src/Componentes/NewPricipal'
+import Actualizar from './src/actions/funcionesBdUpdate'
 
 /*============================================================
 this aplication have this navigation structure:
@@ -107,7 +108,8 @@ const AppStackNavigator = createStackNavigator({
       headerStyle: { backgroundColor: '#5173FF' },
       headerTintColor: '#ffffff',
     },
-  }
+  },
+
 })
 const CustomDrawerComponent = (props) => (
   <SafeAreaView style={{ flex: 1 }}>
@@ -129,6 +131,12 @@ const AppDraweNavigator = createDrawerNavigator({
       drawerIcon: (tintColor) => (
         <Entypo name='home' size={25} />
       )
+    },
+  },
+  Actualizar: {
+    screen: Actualizar,
+    navigationOptions: {
+      headerShown: false,
     },
   },
   NewPrestamo: {

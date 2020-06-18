@@ -2,28 +2,34 @@ import React, { Component } from 'react'
 import { Text, View, StyleSheet, Dimensions, Image, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationEvents } from 'react-navigation';
+import 'intl';
+import 'intl/locale-data/jsonp/es-CO'; // or any other locale you need
 
-import pixelConverter from '../dimxPixels'
-import { Button } from 'native-base';
+import pixelConverter from '../utils/dimxPixels'
 
 const h = Dimensions.get('window').height;
 const w = Dimensions.get('window').width
-const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
 
+const formatter = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0
+})
 class NewPricipal extends Component {
+    componentDidMount() {
+        this.ActualizaMonto()
+    }
+    ActualizaMonto() {
+        this.props.navigation.navigate('Actualizar', { typeList: "Ambas_Listas" })
+    }
     render() {
         return (
             <View style={styles.container}>
                 <NavigationEvents
                     onWillFocus={payload => {
                         if (this.props.refresh) {
-                            this.setState({
-                                refreshing: true,
-                            }, () => {
-                                this.props.RefreshFalse()
-                                this.getLista()
-                                this.getTotalMonto()
-                            })
+                            this.ActualizaMonto()
+                            this.props.RefreshFalse()
                         }
                     }}
                 />
@@ -49,7 +55,6 @@ class NewPricipal extends Component {
         )
     }
 }
-
 const styles = StyleSheet.create({
     container: {
         height: '100%',
@@ -132,7 +137,12 @@ const mapStateToProps = (state) => {
         TotalDeben: state.debenT,
         TotalDebes: state.debesT,
         TotalCartera: state.cartera,
-        ultimaVez: state.ultimaVez
+        ultimaVez: state.ultimaVez,
+
     }
 }
-export default connect(mapStateToProps)(React.memo(NewPricipal))
+const mapDispathToProps = (dispath) => {
+    return {
+    }
+}
+export default connect(mapStateToProps, mapDispathToProps)(React.memo(NewPricipal))

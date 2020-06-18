@@ -3,7 +3,7 @@ import { Text, StyleSheet, ScrollView, TextInput, Dimensions, TouchableHighlight
 import { Header, Left, Right, Body, Title, Icon, Container, View, } from 'native-base'
 import Feather from 'react-native-vector-icons/Feather'
 import { connect } from 'react-redux'
-import { RefreshTrue } from '../actions/actions'
+import { RefreshDeudasTrue, RefreshPrestamoTrue, RefreshTrue } from '../actions/actions'
 
 class AddNewPrestamo extends Component {
     constructor() {
@@ -18,16 +18,6 @@ class AddNewPrestamo extends Component {
     render() {
         return (
             <Container>
-                <Header transparent>
-                    <Left>
-                        <View style={{ backgroundColor: '#5564eb', alignItems: 'center', justifyContent: 'center', width: 35, height: 35, borderRadius: 60, marginTop: 13 }}>
-                            <Feather name="menu" onPress={() => this.props.navigation.openDrawer()} color='white' size={25} />
-                        </View>
-                    </Left>
-                    <Body>
-                        <Text style={styles.title}> {this.props.scrn} </Text>
-                    </Body>
-                </Header>
                 <ScrollView>
                     <Body>
                         <TextInput style={styles.textIn2} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt + "*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
@@ -48,9 +38,7 @@ class AddNewPrestamo extends Component {
         this.setState({
             date: `${month}/${date}/${year}`
         });
-        const { Monto } = this.state
-        const { Nombre } = this.state
-        const { concepto } = this.state
+        const { Monto, Nombre, concepto } = this.state
         if (Monto == '' || isNaN(Monto)) {
             alert('Recuerde que el campo monto debe estar lleno y ser un valor numerico');
         } else {
@@ -65,8 +53,14 @@ class AddNewPrestamo extends Component {
                                     {
                                         text: 'Ok',
                                         onPress: () => {
+                                            if (this.props.TypeList === 'DeboList') {
+                                                this.props.RefreshDeudasTrue()
+                                            } else {
+                                                this.props.RefreshPrestamoTrue()
+                                            }
                                             this.props.RefreshTrue()
-                                            this.props.navigation.navigate('Home')
+                                            this.props.navigation.navigate('Actualizar', { typeList: this.props.TypeList })
+                                            // this.props.navigation.navigate('Home')
                                         },
                                     },
                                 ],
@@ -157,9 +151,9 @@ const mapStateToProps = (state) => {
 }
 const mapDispathToProps = (dispath) => {
     return {
-        RefreshTrue: () => {
-            return dispath(RefreshTrue())
-        }
+        RefreshDeudasTrue: () => dispath(RefreshDeudasTrue()),
+        RefreshPrestamoTrue: () => dispath(RefreshPrestamoTrue()),
+        RefreshTrue: () => dispath(RefreshTrue())
     }
 }
 export default connect(mapStateToProps, mapDispathToProps)(AddNewPrestamo);

@@ -3,26 +3,27 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image }
 import { TextInput } from 'react-native-gesture-handler';
 import { Container, Header } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
+
 import Moment from 'moment';
 import 'intl';
 import 'intl/locale-data/jsonp/es-CO'; // or any other locale you need
 
 //redux
 import { connect } from 'react-redux'
-import { UpdateDEBEN, UpdateDEBES, RefreshFalse } from '../actions/actions'
+import { RefreshDeudasFalse, RefreshPrestamoFalse } from '../actions/actions'
 
-import pixelConverter from '../dimxPixels'
+import pixelConverter from '../utils/dimxPixels'
 
 //sera usada para agrupar las box 
 let Fecha
 //formateo del monto formato estadounidense
-//const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', })
 const formatter = new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 0
+    style: 'currency', currency: 'COP', minimumFractionDigits: 0
 })
 class listaPrestamos extends Component {
+    getT() {
+        this.props.navigation.openDrawer()
+    }
     constructor() {
         super()
         this.state = {
@@ -65,20 +66,31 @@ class listaPrestamos extends Component {
                 <Header style={styles.header}>
                     <View style={{ width: Dimensions.get('window').width - 63, alignItems: 'flex-start' }}>
                         <View style={styles.search}>
-                            <Image style={{ height: pixelConverter(40), width: pixelConverter(40), left: pixelConverter(25), }} source={require('../../assets/images/search.png')}></Image>
+                            <Image style={{
+                                height: pixelConverter(40), width: pixelConverter(40),
+                                left: pixelConverter(25),
+                            }}
+                                source={require('../../assets/images/search.png')}
+                            />
                             <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(545), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }} placeholderTextColor='#F0F0F0' placeholder='Buscar' />
                         </View>
                     </View>
-                    <Image style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
+                    <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
                 </Header>
                 <FlatList
                     ListHeaderComponent={
                         <View>
                             <NavigationEvents
                                 onWillFocus={payload => {
-                                    if (this.props.refresh) {
+                                    console.log(this.props.refreshPrestamos, this.props.refreshDeudas)
+                                    if (this.props.TypeList === 'DebenList' & this.props.refreshPrestamos) {
                                         this.setState({ refreshing: true }, () => {
-                                            this.props.RefreshFalse()
+                                            this.props.RefreshPrestamoFalse()
+                                            this.getLista()
+                                        })
+                                    } else if (this.props.TypeList === 'DeboList' & this.props.refreshDeudas) {
+                                        this.setState({ refreshing: true }, () => {
+                                            this.props.RefreshDeudasFalse()
                                             this.getLista()
                                         })
                                     }
@@ -86,15 +98,12 @@ class listaPrestamos extends Component {
                             />
                         </View>
                     }
-                    style={{ backgroundColor: '#B2E9AB' }}
-                    ref='myFlatList'
-                    data={this.state.FlatListItems}
+                    style={{ backgroundColor: '#B2E9AB' }} ref='myFlatList'
+                    keyExtractor={item => `i${item.Id}`} refreshing={this.state.refreshing}
+                    onRefresh={this.UpdateList} data={this.state.FlatListItems}
                     renderItem={this.renderItemComponent.bind(this)}
-                    keyExtractor={item => `i${item.Id}`}
-                    refreshing={this.state.refreshing}
-                    onRefresh={this.UpdateList}
                 />
-                <TouchableOpacity style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} onPress={() => null} >
+                <TouchableOpacity style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} onPress={this.getT.bind(this)} >
                     <Image style={{ height: pixelConverter(120), width: pixelConverter(120), }} source={require('../../assets/images/plus.png')}></Image>
                 </TouchableOpacity>
             </Container >
@@ -112,7 +121,7 @@ class listaPrestamos extends Component {
                 {!igualFecha && (
                     <Text style={styles.fecha}>{Moment(item.Fecha).format("DD MMM [de] YYYY")} </Text>
                 )}
-                <TouchableOpacity style={styles.touchableOpacity} onPress={() => this.setState({ item: item })} >
+                <TouchableOpacity style={styles.touchableOpacity} onPress={() => { this.GoDetails(item) }} >
                     <View style={styles.lista} >
                         <View style={styles.top} >
                             <Text style={styles.tex2} > {this.props.quien}</Text>
@@ -123,9 +132,6 @@ class listaPrestamos extends Component {
                         </View>
                     </View>
                 </TouchableOpacity>
-                {(item.Id == this.state.item.Id) && // se muestra cuando le doy click a el icono de expandir
-                    this.GoDetails()
-                }
             </View>
         )
     };
@@ -134,8 +140,9 @@ class listaPrestamos extends Component {
             this.getLista()
         })//this.refs.myFlatList.scrollToEnd();
     }
-    GoDetails() {
-        this.props.navigation.navigate('Detalles', { item: this.state.item, TypeList: this.props.TypeList })
+    GoDetails(item) {
+        this.setState({ item: '' })
+        this.props.navigation.navigate('Detalles', { item: item, TypeList: this.props.TypeList })
     }
 }
 const styles = StyleSheet.create({
@@ -149,7 +156,8 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: '#B2E9AB',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: 0
     },
     search: {
         flexDirection: 'row',
@@ -215,20 +223,14 @@ const mapStateToProps = (state) => {
     return {
         db: state.db,
         usuario: state.usuario,
-        refresh: state.refresh
+        refreshPrestamos: state.refreshPrestamos,
+        refreshDeudas: state.refreshDeudas
     }
 }
 const mapDispathToProps = (dispath) => {
     return {
-        UpdateDEBEN_: (deben) => {
-            return dispath(UpdateDEBEN(deben))
-        },
-        UpdateDEBES_: (debes) => {
-            return dispath(UpdateDEBES(debes))
-        },
-        RefreshFalse: () => {
-            return dispath(RefreshFalse())
-        }
+        RefreshDeudasFalse: () => dispath(RefreshDeudasFalse()),
+        RefreshPrestamoFalse: () => dispath(RefreshPrestamoFalse())
     }
 }
 export default connect(mapStateToProps, mapDispathToProps)(listaPrestamos);

@@ -5,7 +5,7 @@ import 'intl/locale-data/jsonp/en'; // or any other locale you need
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { connect } from 'react-redux'
-import { RefreshTrue } from '../actions/actions'
+import { RefreshDeudasTrue, RefreshPrestamoTrue } from '../actions/actions'
 
 const formatter = new Intl.NumberFormat('es-CO', {
     style: "currency", currency: "COP"
@@ -68,7 +68,7 @@ class MasDetalesItem extends Component {
                     onPress: this.DeleteItem.bind(this)
                 },
                 {
-                    text: 'Cancelar'
+                    text: 'Cancelar',
                 }
             ],
 
@@ -97,8 +97,13 @@ class MasDetalesItem extends Component {
         this.props.db.transaction(tx => {
             tx.executeSql(query, [this.item.Id], (tx, res) => {
                 if (res.rowsAffected > 0) {
-                    this.props.RefreshTrue()
-                    this.props.navigation.navigate('AppTabNavigtator')
+                    if (TypeList === 'DeboList') {
+                        this.props.RefreshDeudasTrue()
+                    } else {
+                        this.props.RefreshPrestamoTrue()
+                    }
+                    this.props.navigation.pop()
+                    this.props.navigation.navigate('Actualizar', { typeList: TypeList })
                     Alert.alert(
                         'Borrado exitoso',
                         'Se ha borado el item satifactoriamente',
@@ -159,9 +164,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispathToProps = (dispath) => {
     return {
-        RefreshTrue: () => {
-            return dispath(RefreshTrue())
-        }
+        RefreshDeudasTrue: () => dispath(RefreshDeudasTrue()),
+        RefreshPrestamoTrue: () => dispath(RefreshPrestamoTrue())
     }
 }
 export default connect(mapStateToProps, mapDispathToProps)(MasDetalesItem);
