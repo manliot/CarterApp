@@ -1,26 +1,25 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, Dimensions, Image, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, Dimensions, Image, ScrollView, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationEvents } from 'react-navigation';
 import 'intl';
 import 'intl/locale-data/jsonp/es-CO'; // or any other locale you need
 
+import { UpdateDEBEN, UpdateDEBES } from '../actions/actions'
 import pixelConverter from '../utils/dimxPixels'
 
-const h = Dimensions.get('window').height;
-const w = Dimensions.get('window').width
+import actualizar from '../utils/actualizar'
 
-const formatter = new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 0
-})
+const formatter = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 })
 class NewPricipal extends Component {
     componentDidMount() {
         this.ActualizaMonto()
     }
-    ActualizaMonto() {
-        this.props.navigation.navigate('Actualizar', { typeList: "Ambas_Listas" })
+    async ActualizaMonto() {
+        const MontoDebenList = await actualizar('SELECT Monto FROM DebenList WHERE Usuario=?', this.props.usuario, this.props.db)
+        const MontoDeboList = await actualizar('SELECT Monto FROM DeboList WHERE Usuario=?', this.props.usuario, this.props.db)
+        this.props.UpdateDEBEN_(MontoDebenList)
+        this.props.UpdateDEBES_(MontoDeboList)
     }
     render() {
         return (
@@ -48,11 +47,16 @@ class NewPricipal extends Component {
                         <Text style={[styles.text_valor]}>{formatter.format(this.props.TotalDebes)}</Text>
                         <Text style={[styles.text_ver_detalles]} onPress={() => { this.props.navigation.navigate('ListaDeudas') }}>VER DETALLES</Text>
                     </View>
-                    <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ height: pixelConverter(120), width: pixelConverter(120), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(410), elevation: 10 }} source={require('../../assets/images/plus.png')}></Image>
+                    <TouchableOpacity onPress={this.openDrawer.bind(this)} style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(410) }} >
+                        <Image style={{ height: pixelConverter(120), width: pixelConverter(120) }} source={require('../../assets/images/plus.png')}></Image>
+                    </TouchableOpacity>
                 </View>
             </View>
 
         )
+    }
+    openDrawer() {
+        this.props.navigation.openDrawer()
     }
 }
 const styles = StyleSheet.create({
@@ -143,6 +147,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispathToProps = (dispath) => {
     return {
+        UpdateDEBEN_: (deben) => dispath(UpdateDEBEN(deben)),
+        UpdateDEBES_: (debes) => dispath(UpdateDEBES(debes)),
     }
 }
 export default connect(mapStateToProps, mapDispathToProps)(React.memo(NewPricipal))

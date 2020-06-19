@@ -26,7 +26,7 @@ import Componente_Lista from './src/Componentes/Componente_Lista'
 import Cartera from './src/Componentes/Cartera'
 import MasDetalesItem from './src/Componentes/masDetalesItem'
 import NewPricipal from './src/Componentes/NewPricipal'
-import Actualizar from './src/actions/funcionesBdUpdate'
+
 
 /*============================================================
 this aplication have this navigation structure:
@@ -133,12 +133,6 @@ const AppDraweNavigator = createDrawerNavigator({
       )
     },
   },
-  Actualizar: {
-    screen: Actualizar,
-    navigationOptions: {
-      headerShown: false,
-    },
-  },
   NewPrestamo: {
     screen: (props) => <NewPrestamo_o_Deuda {...props} TypeList='DebenList' Txt='¿A quien le prestaste?' scrn='Nuevo Prestamo' Monto='¿Cuento le prestaste?' Concepto=' ¿Para que se los prestaste?' />,
     navigationOptions: {
@@ -198,9 +192,9 @@ const AppStackNavigator1 = createStackNavigator({
       headerStyle: { backgroundColor: '#5173FF' },
       headerTintColor: '#ffffff',
       headerShown: false
-    },
+    }, initialRouteName: Login,
   },
-  initialRouteName: 'Login',
+
 })
 
 const AppContainer = createAppContainer(AppStackNavigator1);

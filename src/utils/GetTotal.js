@@ -1,54 +1,75 @@
-/* import { openDatabase } from 'react-native-sqlite-storage'; // to DataBase
-import { useSelector, useDispatch } from 'react-redux'
-import { View } from 'native-base';
-import React, { Component } from 'react'
-const db = openDatabase({
-    name: 'posqlitExmple.db',
-    createFromLocation: '~www/sqlitExmple.db'
-},
-(good) => { //in case of success print
-        console.log('OpenMensaje ' + good.dbname)
-    },
-    (err) => { // in case of error print
-        console.log('errorMensaje', err.dbname)
-    }
-)
-let usuario = '';
-let totalDeben = 0;
-let totalDebes = 0;
-let changeDeben = false
-let changeDebes = false
+import React, { Component, useState } from 'react'
+import { connect, useDispatch, useSelector } from 'react-redux'
+import { UpdateDEBEN, UpdateDEBES } from '../actions/actions'
+import { Text, View, ActivityIndicator, Modal } from 'react-native'
+import { NavigationEvents } from 'react-navigation';
 
-const populateDB = (tx) => {
-    if (changeDeben) tx.executeSql('SELECT Monto FROM DebenList WHERE Usuario=?', [usuario], deben.bind(this));
-    if (changeDebes) tx.executeSql('SELECT Monto FROM DeboList WHERE Usuario=?', [usuario], debes.bind(this));
-}
-function deben(tx, res) {
-    let totalTem = 0;
-    for (let i = 0; i < res.rows.length; ++i) {
-        let item = res.rows.item(i); totalTem = totalTem + item.Monto;
-    }
-    totalDeben = totalTem
-    //this.props.UpdateDEBEN_(totalTem).bind(this)
-}
-const debes = (tx, res) => {
-    let totalTem = 0;
-    for (let i = 0; i < res.rows.length; ++i) {
-        let item = res.rows.item(i); totalTem = totalTem + item.Monto;
-    }
-    totalDebes = totalTem
-    //this.props.UpdateDEBES_(totalTem).bind(this)
-}
-function getTotalMonto(user, chDeben, chDebes) {
-    const stata = useSelector(state => state.usuario)
-    console.log(stata)
+const funcionesBdUpdate = () => {
+    const [actualizando, setActualizando] = useState(true)
+    const usuario = useSelector(state => state.usuario)
+    const db = useSelector(state => state.db)
+    const dispatch = useDispatch()
+    const typeList = 'Ambas_Listas'
+    const ActualizaMonto = () => {
+        console.log('-----', usuario)
+        if (typeList === "DebenList" || typeList === "Ambas_Listas") {
+            getTotalMonto('SELECT Monto FROM DebenList WHERE Usuario=?')
+                .then((res) => {
+                    setActualizando(false)
+                    console.log('result:', res)
+                    dispatch(UpdateDEBEN(res))
+                    //this.props.navigation.navigate('Home')
+                }).catch((err) => { console.log(err) })
+        }
+        /*   if (this.props.navigation.state.params.typeList === "DeboList" || this.props.navigation.state.params.typeList === "Ambas_Listas") {
+      getTotalMonto('SELECT Monto FROM DeboList WHERE Usuario=?')
+          .then((res) => {
+              setActualizando(false)
+              this.props.UpdateDEBES_(res)
+              this.props.navigation.navigate('Home')
+          }).catch((err) => { console.log(err) })
+  } */
 
-    usuario = user
-    changeDeben = chDeben
-    changeDebes = chDebes
-    let ret = { changeDeben, changeDebes, totalDeben, totalDebes }
-    db.transaction(populateDB.bind(this))
-    return (<View>nada</View>)
+    }
+    const getTotalMonto = (query) => {
+        return new Promise((resolve, reject) => {
+            db.transaction(tx => {
+                tx.executeSql(query, [usuario],
+                    (tx, res) => {
+                        let totalTem = 0;
+                        for (let i = 0; i < res.rows.length; ++i) {
+                            let item = res.rows.item(i); totalTem = totalTem + item.Monto;
+                        }
+                        resolve(totalTem)
+                    })
+            })
+        })
+    }
+    ActualizaMonto()
+    return (
+        <View style={{ justifyContent: "center", alignItems: 'center', height: '100%' }}>
+            <NavigationEvents
+                onWillFocus={payload => {
+                    ActualizaMonto()
+                }}
+            />
+            <ActivityIndicator animating={actualizando} size="large" color="#0000ff" />
+        </View>
+    )
+
 }
-//console.log(getTotalMonto("Admin", true, true))
-module.exports = getTotalMonto */
+const mapStateToProps = (state) => {
+    return {
+        db: state.db,
+        usuario: state.usuario,
+    }
+}
+const mapDispathToProps = (dispath) => {
+    return {
+        UpdateDEBEN_: (deben) => dispath(UpdateDEBEN(deben)),
+        UpdateDEBES_: (debes) => dispath(UpdateDEBES(debes)),
+    }
+}
+export default funcionesBdUpdate
+/* export default connect(mapStateToProps, mapDispathToProps)(funcionesBdUpdate); */
+
