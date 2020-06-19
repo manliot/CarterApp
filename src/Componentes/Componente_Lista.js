@@ -119,7 +119,7 @@ class listaPrestamos extends Component {
     return (//View de los items del FlatList
       <View style={styles.container_lista} >
         {!igualFecha && (
-          <Text style={styles.fecha}>{Moment(new Date(item.Fecha)).format("DD MMM [de] YYYY")} </Text>
+          <Text style={styles.fecha}>• • {Moment(new Date(item.Fecha)).format("DD MMM [de] YYYY")} • •</Text>
         )}
         <TouchableOpacity style={styles.touchableOpacity} onPress={() => { this.GoDetails(item) }} >
           <View style={styles.lista} >
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     fontSize: pixelConverter(28),
   },
   touchableOpacity: {
-    padding: 0,
+    padding: pixelConverter(0),
     borderRadius: pixelConverter(10),
   },
   lista: {

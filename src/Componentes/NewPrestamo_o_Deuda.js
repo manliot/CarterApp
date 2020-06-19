@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, ScrollView, TextInput, Dimensions, TouchableHighlight, Alert, } from 'react-native';
+import { Text, StyleSheet, ScrollView, TextInput, Dimensions, TouchableHighlight, Alert, Image, TouchableOpacity } from 'react-native';
 import { Body, Container, View, } from 'native-base'
 import { connect } from 'react-redux'
 import { RefreshDeudasTrue, RefreshPrestamoTrue, RefreshTrue } from '../actions/actions'
 
 import actualizar from '../utils/actualizar'
+import pixelConverter from '../utils/dimxPixels'
 
 import { UpdateDEBEN, UpdateDEBES } from '../actions/actions'
+const w = (Dimensions.get('window').width)
+const h = (Dimensions.get('window').height)
 
 class AddNewPrestamo extends Component {
   constructor() {
@@ -20,18 +23,26 @@ class AddNewPrestamo extends Component {
   }
   render() {
     return (
-      <Container>
-        <ScrollView>
-          <Body>
-            <TextInput style={styles.textIn2} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt + "*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
-            <TextInput style={styles.textIn} keyboardType='numeric' placeholderTextColor='grey' placeholder={this.props.Monto + "*"} onChangeText={(text) => this.setState({ Monto: text })} ref='_2' onSubmitEditing={(event) => { this.refs._3.focus(); }} />
-            <TextInput style={styles.textInConcepto} words={true} multiline={true} placeholderTextColor='grey' placeholder={this.props.Concepto} onChangeText={(text) => this.setState({ concepto: text })} ref='_3' />
-            <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
-              <Text style={styles.textButton}> Add </Text>
-            </TouchableHighlight>
-          </Body>
+      <View style={{ backgroundColor: '#B2E9AB', flex: 1 }}>
+        <ScrollView >
+          <View style={styles.containerScroll}>
+            <View style={styles.form}>
+              <Text style={styles.title}>{this.props.scrn}</Text>
+              <TextInput style={[styles.textInput, { marginTop: 0 }]} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt + "*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
+              <TextInput style={styles.textInput} keyboardType='numeric' placeholderTextColor='grey' placeholder={this.props.Monto + "*"} onChangeText={(text) => this.setState({ Monto: text })} ref='_2' />
+              <TextInput style={styles.textInput} keyboardType='numeric' placeholderTextColor='grey' placeholder={"¿Que dia le prestaste?"} onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._3.focus(); }} />
+              <TextInput style={[styles.textInput, { height: pixelConverter(116) }]} words={true} multiline={true} placeholderTextColor='grey' placeholder={this.props.Concepto} onChangeText={(text) => this.setState({ concepto: text })} ref='_3' />
+              <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
+                <Text style={styles.textButton}>Listo!</Text>
+              </TouchableHighlight>
+            </View>
+            <TouchableOpacity /* onPress={this.openDrawer.bind(this)}  */ style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(110), width: pixelConverter(110), right: -pixelConverter(290), marginTop: -pixelConverter(50) /* bottom: pixelConverter(10) */ }} >
+              <Image style={{ height: pixelConverter(110), width: pixelConverter(110) }} source={require('../../assets/images/plus.png')}></Image>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
-      </Container>
+        <Image style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
+      </View>
     );
   }
   onAdd() {
@@ -87,16 +98,31 @@ class AddNewPrestamo extends Component {
 }
 const styles = StyleSheet.create({
   container: {
+
+  },
+  containerScroll: {
+    backgroundColor: '#B2E9AB',
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
+    height: h
+  },
+  form: {
+    marginTop: pixelConverter(110),
     backgroundColor: 'white',
+    width: pixelConverter(620),
+    alignItems: 'center',
+    borderRadius: pixelConverter(32),
+    elevation: 5,
+    paddingBottom: pixelConverter(126),
+    paddingTop: pixelConverter(60),
+    paddingEnd: pixelConverter(67),
+    paddingStart: pixelConverter(67)
   },
   title: {
     marginTop: 13,
     fontSize: 20,
-    color: 'black',
+    color: '#947777',
+    marginBottom: pixelConverter(90)
   },
   header: {
     flex: 0.1,
@@ -114,18 +140,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   button: {
-    width: 250,
+    width: pixelConverter(240),
     height: 40,
-    backgroundColor: '#5564eb',
+    backgroundColor: '#65D359',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 70,
+    marginTop: pixelConverter(58),
     marginBottom: 10,
     borderRadius: 20,
-    borderWidth: 1
   },
   textButton: {
-    color: '#F5F5DC',
+    color: '#FFFDFD',
   },
 
   textIn: {
@@ -136,13 +161,13 @@ const styles = StyleSheet.create({
     color: 'black',
     borderBottomColor: 'grey'
   },
-  textIn2: {
-    marginTop: 70,
-    width: 270,
-    height: 40,
-    borderBottomWidth: 2,
+  textInput: {
+    marginTop: pixelConverter(58),
+    width: pixelConverter(484),
+    height: pixelConverter(75),
     color: 'black',
-    borderBottomColor: 'grey'
+    backgroundColor: '#F2F2F2',
+    borderRadius: pixelConverter(10)
   },
   textInConcepto: {
     marginTop: 45,
