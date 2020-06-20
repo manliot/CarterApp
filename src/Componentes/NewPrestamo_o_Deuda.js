@@ -29,7 +29,13 @@ class AddNewPrestamo extends Component {
     this.setState({ isVisible: false })
   }
   handleConfirm = (date) => {
-    console.log('fecha: ', date)
+    const dia = date.getDate(); //Current Date
+    const month = date.getMonth() + 1; //Current Month
+    const year = date.getFullYear(); //Current Year
+    const fecha = `${year}/${month}/${dia}`
+    this.setState({ date: fecha })
+
+    console.log('fecha: ', fecha)
     this.hideDatePicker()
   }
   render() {
@@ -47,8 +53,8 @@ class AddNewPrestamo extends Component {
               <Text style={styles.title}>{this.props.scrn}</Text>
               <TextInput style={[styles.textInput, { marginTop: 0 }]} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt + "*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
               <TextInput style={styles.textInput} keyboardType='numeric' placeholderTextColor='grey' placeholder={this.props.Monto + "*"} onChangeText={(text) => this.setState({ Monto: text })} ref='_2' />
-              <View style={styles.dateSelector}>
-                <TextInput style={[styles.textInput, { marginTop: 0 }]} keyboardType='numeric' placeholderTextColor='grey' placeholder={"¿Que dia le prestaste?"} onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._3.focus(); }} />
+              <View style={styles.dateSelector} >
+                <TextInput editable={false} onPress={this.showDatePicker.bind(this)} style={[styles.textInput, { marginTop: 0, color: 'grey' }]} keyboardType='numeric' placeholderTextColor='grey' placeholder={"¿Que dia le prestaste?"} onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._3.focus(); }} >{this.state.date}</TextInput>
                 <TouchableHighlight onPress={this.showDatePicker.bind(this)} style={{ right: pixelConverter(60) }}>
                   <Image style={{ height: pixelConverter(50), width: pixelConverter(50) }} source={require('../../assets/images/calendar.png')}></Image>
                 </TouchableHighlight>
@@ -58,7 +64,7 @@ class AddNewPrestamo extends Component {
                 <Text style={styles.textButton}>Listo!</Text>
               </TouchableHighlight>
             </View>
-            <TouchableOpacity style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(110), width: pixelConverter(110), right: -pixelConverter(290), marginTop: -pixelConverter(50) }} >
+            <TouchableOpacity style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(110), width: pixelConverter(110), right: -pixelConverter(290), marginTop: -pixelConverter(100) }} >
               <Image style={{ height: pixelConverter(110), width: pixelConverter(110) }} source={require('../../assets/images/plus.png')}></Image>
             </TouchableOpacity>
           </View>
@@ -68,12 +74,14 @@ class AddNewPrestamo extends Component {
     );
   }
   onAdd() {
-    const date = new Date().getDate(); //Current Date
-    const month = new Date().getMonth() + 1; //Current Month
-    const year = new Date().getFullYear(); //Current Year
-    this.setState({
-      date: `${month}/${date}/${year}`
-    });
+    if (this.state.date === '') {
+      const date = new Date().getDate(); //Current Date
+      const month = new Date().getMonth() + 1; //Current Month
+      const year = new Date().getFullYear(); //Current Year
+      this.setState({
+        date: `${month}/${date}/${year}`
+      });
+    }
     const { Monto, Nombre, concepto } = this.state
     if (Monto == '' || isNaN(Monto)) {
       alert('Recuerde que el campo monto debe estar lleno y ser un valor numerico');
@@ -194,7 +202,8 @@ const styles = StyleSheet.create({
     height: pixelConverter(75),
     color: 'black',
     backgroundColor: '#F2F2F2',
-    borderRadius: pixelConverter(10)
+    borderRadius: pixelConverter(10),
+    paddingStart: pixelConverter(20)
   },
   textInConcepto: {
     marginTop: 45,

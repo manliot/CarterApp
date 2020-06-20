@@ -21,9 +21,9 @@
      this.props.db.transaction(this.populateDB.bind(this))
  }
 */
-cambiarfechas() {//cambiar fechas
+cambiarfechas(fe, idl) {//cambiar fechas
     this.props.db.transaction(tx => {
-        tx.executeSql('UPDATE DebenList SET Fecha = ? WHERE IDdeben==?', ["6/15/2020", 53],
+        tx.executeSql('UPDATE DebenList SET Fecha = ? WHERE IDdeben==?', [fe, idl],
             (tx, res) => {
                 for (let i = 0; i < res.rows.length; i++) {
                     console.log(i + '): ' + res/* .rows.item(i) */)
@@ -37,3 +37,10 @@ cambiarfechas() {//cambiar fechas
         )
     })
 }
+let texVec = new Array();
+let texVect = item.Fecha.split('/').reverse()
+let text = `${texVect[0]}/${texVect[1]}/${texVect[2]}`
+texVec[i] = { text, Id }
+
+console.log(texVec[i])
+    //texVec.map((i) => this.cambiarfechas(i.text, i.Id))

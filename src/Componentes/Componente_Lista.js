@@ -36,7 +36,7 @@ class listaPrestamos extends Component {
   getLista = () => {
     // se llena el flatlistItem con el resultado del query
     this.props.db.transaction(tx => {
-      tx.executeSql(`SELECT * FROM ${this.props.TypeList} WHERE Usuario=?`,
+      tx.executeSql(`SELECT * FROM ${this.props.TypeList} WHERE Usuario=? ORDER BY "Fecha" ASC`,
         [this.props.usuario],
         (tx, res) => {
           var temp = new Array();
@@ -50,6 +50,7 @@ class listaPrestamos extends Component {
             } else console.error('Faltan datos para poder llenar el componente')
             temp[i] = { ...item, Id }
           }
+
           this.setState({ FlatListItems: temp, refreshing: false });
         }, this.errorDB)
     })
