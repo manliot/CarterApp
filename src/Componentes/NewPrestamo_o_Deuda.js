@@ -3,7 +3,7 @@ import { Text, StyleSheet, ScrollView, TextInput, Dimensions, TouchableHighlight
 import { Body, Container, View, } from 'native-base'
 import { connect } from 'react-redux'
 import { RefreshDeudasTrue, RefreshPrestamoTrue, RefreshTrue } from '../actions/actions'
-
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import actualizar from '../utils/actualizar'
 import pixelConverter from '../utils/dimxPixels'
 
@@ -18,12 +18,29 @@ class AddNewPrestamo extends Component {
       Monto: '',
       Nombre: '',
       concepto: '',
-      date: ''
+      date: '',
+      isVisible: false
     }
+  }
+  showDatePicker() {
+    this.setState({ isVisible: true })
+  }
+  hideDatePicker = () => {
+    this.setState({ isVisible: false })
+  }
+  handleConfirm = (date) => {
+    console.log('fecha: ', date)
+    this.hideDatePicker()
   }
   render() {
     return (
       <View style={{ backgroundColor: '#B2E9AB', flex: 1 }}>
+        <DateTimePickerModal
+          isVisible={this.state.isVisible}
+          mode="date"
+          onConfirm={this.handleConfirm}
+          onCancel={this.hideDatePicker}
+        />
         <ScrollView >
           <View style={styles.containerScroll}>
             <View style={styles.form}>
@@ -36,7 +53,7 @@ class AddNewPrestamo extends Component {
                 <Text style={styles.textButton}>Listo!</Text>
               </TouchableHighlight>
             </View>
-            <TouchableOpacity /* onPress={this.openDrawer.bind(this)}  */ style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(110), width: pixelConverter(110), right: -pixelConverter(290), marginTop: -pixelConverter(50) /* bottom: pixelConverter(10) */ }} >
+            <TouchableOpacity onPress={this.showDatePicker.bind(this)} style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(110), width: pixelConverter(110), right: -pixelConverter(290), marginTop: -pixelConverter(50) }} >
               <Image style={{ height: pixelConverter(110), width: pixelConverter(110) }} source={require('../../assets/images/plus.png')}></Image>
             </TouchableOpacity>
           </View>

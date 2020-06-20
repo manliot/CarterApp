@@ -40,7 +40,7 @@ cd android
 
 cd ..
 
-npm cache clean --
+npm cache clean --force
 
 build.gradle
 
