@@ -25,6 +25,7 @@ class listaPrestamos extends Component {
     super()
     this.state = {
       FlatListItems: [],
+      TempFlatListItems: [],
       refreshing: false,
       expandir: false,//usado para controlar cuando mostar el CONCEPTO
       item: '',// usado para obtener el id del item seleccionado (flatlist)
@@ -50,7 +51,6 @@ class listaPrestamos extends Component {
             } else console.error('Faltan datos para poder llenar el componente')
             temp[i] = { ...item, Id }
           }
-
           this.setState({ FlatListItems: temp, refreshing: false });
         }, this.errorDB)
     })

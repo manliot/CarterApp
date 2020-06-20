@@ -54,10 +54,12 @@ class AddNewPrestamo extends Component {
               <TextInput style={[styles.textInput, { marginTop: 0 }]} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt + "*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
               <TextInput style={styles.textInput} keyboardType='numeric' placeholderTextColor='grey' placeholder={this.props.Monto + "*"} onChangeText={(text) => this.setState({ Monto: text })} ref='_2' />
               <View style={styles.dateSelector} >
-                <TextInput editable={false} onPress={this.showDatePicker.bind(this)} style={[styles.textInput, { marginTop: 0, color: 'grey' }]} keyboardType='numeric' placeholderTextColor='grey' placeholder={"¿Que dia le prestaste?"} onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._3.focus(); }} >{this.state.date}</TextInput>
-                <TouchableHighlight onPress={this.showDatePicker.bind(this)} style={{ right: pixelConverter(60) }}>
-                  <Image style={{ height: pixelConverter(50), width: pixelConverter(50) }} source={require('../../assets/images/calendar.png')}></Image>
+                <TouchableHighlight onPress={this.showDatePicker.bind(this)} style={{ borderRadius: pixelConverter(10), }}>
+                  <TextInput editable={false} style={[styles.textInput, { marginTop: 0, color: 'grey' }]} keyboardType='numeric' placeholderTextColor='grey' placeholder={"¿Que dia le prestaste?"} onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._3.focus(); }} >{this.state.date}</TextInput>
                 </TouchableHighlight>
+                <TouchableOpacity onPress={this.showDatePicker.bind(this)} style={{ right: pixelConverter(60) }}>
+                  <Image style={{ height: pixelConverter(50), width: pixelConverter(50) }} source={require('../../assets/images/calendar.png')}></Image>
+                </TouchableOpacity>
               </View>
               <TextInput style={[styles.textInput, { height: pixelConverter(116) }]} words={true} multiline={true} placeholderTextColor='grey' placeholder={this.props.Concepto} onChangeText={(text) => this.setState({ concepto: text })} ref='_3' />
               <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
