@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image }
 import { TextInput } from 'react-native-gesture-handler';
 import { Container, Header } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
+import Cartera from './Cartera'
 
 import Moment from 'moment';
 import 'intl';
@@ -65,6 +66,7 @@ class listaPrestamos extends Component {
     } else {
       let newTempArray = this.state.FlatListItems.filter(i => i.Nombre.includes(filtro))
       this.setState({ TempFlatListItems: newTempArray, refreshing: false });
+
     }
   }
   errorDB(error) {
@@ -114,12 +116,23 @@ class listaPrestamos extends Component {
           keyExtractor={item => `i${item.Id}`} refreshing={this.state.refreshing}
           onRefresh={this.UpdateList} data={this.state.TempFlatListItems}
           renderItem={this.renderItemComponent.bind(this)}
+          ListEmptyComponent={this.sorryPage}
         />
         <TouchableOpacity onPress={this.openDrawer.bind(this)} style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} >
           <Image style={{ height: pixelConverter(120), width: pixelConverter(120), }} source={require('../../assets/images/plus.png')}></Image>
         </TouchableOpacity>
       </Container >
     );
+  }
+  sorryPage() {
+    return (
+      <Image style={{ height: 600, width: 370 }} source={require('../../assets/images/sorryPage.png')}></Image>
+    )
+  }
+  BienvenidoPage() {
+    return (
+      <Image style={{ height: 600, width: 370 }} source={require('../../assets/images/bienvenidoPage.png')}></Image>
+    )
   }
   openDrawer() {
     this.props.navigation.openDrawer()
