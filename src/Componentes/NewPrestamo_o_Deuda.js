@@ -47,13 +47,18 @@ class AddNewPrestamo extends Component {
               <Text style={styles.title}>{this.props.scrn}</Text>
               <TextInput style={[styles.textInput, { marginTop: 0 }]} autoFocus={true} placeholderTextColor='grey' placeholder={this.props.Txt + "*"} onChangeText={(text) => this.setState({ Nombre: text })} onSubmitEditing={(event) => { this.refs._2.focus(); }} />
               <TextInput style={styles.textInput} keyboardType='numeric' placeholderTextColor='grey' placeholder={this.props.Monto + "*"} onChangeText={(text) => this.setState({ Monto: text })} ref='_2' />
-              <TextInput style={styles.textInput} keyboardType='numeric' placeholderTextColor='grey' placeholder={"¿Que dia le prestaste?"} onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._3.focus(); }} />
+              <View style={styles.dateSelector}>
+                <TextInput style={[styles.textInput, { marginTop: 0 }]} keyboardType='numeric' placeholderTextColor='grey' placeholder={"¿Que dia le prestaste?"} onChangeText={(text) => this.setState({ Monto: text })} onSubmitEditing={(event) => { this.refs._3.focus(); }} />
+                <TouchableHighlight onPress={this.showDatePicker.bind(this)} style={{ right: pixelConverter(60) }}>
+                  <Image style={{ height: pixelConverter(50), width: pixelConverter(50) }} source={require('../../assets/images/calendar.png')}></Image>
+                </TouchableHighlight>
+              </View>
               <TextInput style={[styles.textInput, { height: pixelConverter(116) }]} words={true} multiline={true} placeholderTextColor='grey' placeholder={this.props.Concepto} onChangeText={(text) => this.setState({ concepto: text })} ref='_3' />
               <TouchableHighlight onPress={(this.onAdd.bind(this))} style={styles.button}>
                 <Text style={styles.textButton}>Listo!</Text>
               </TouchableHighlight>
             </View>
-            <TouchableOpacity onPress={this.showDatePicker.bind(this)} style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(110), width: pixelConverter(110), right: -pixelConverter(290), marginTop: -pixelConverter(50) }} >
+            <TouchableOpacity style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(110), width: pixelConverter(110), right: -pixelConverter(290), marginTop: -pixelConverter(50) }} >
               <Image style={{ height: pixelConverter(110), width: pixelConverter(110) }} source={require('../../assets/images/plus.png')}></Image>
             </TouchableOpacity>
           </View>
@@ -141,11 +146,17 @@ const styles = StyleSheet.create({
     color: '#947777',
     marginBottom: pixelConverter(90)
   },
+  dateSelector: {
+    flexDirection: 'row',
+    height: pixelConverter(75),
+    marginTop: pixelConverter(58),
+    alignItems: 'center',
+    width: pixelConverter(484),
+  },
   header: {
     flex: 0.1,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    backgroundColor: '#5564eb',
     marginTop: 0,
     width: Dimensions.get('window').width,
   },
@@ -169,7 +180,6 @@ const styles = StyleSheet.create({
   textButton: {
     color: '#FFFDFD',
   },
-
   textIn: {
     marginTop: 45,
     width: 270,
