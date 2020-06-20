@@ -29,6 +29,7 @@ class listaPrestamos extends Component {
       refreshing: false,
       expandir: false,//usado para controlar cuando mostar el CONCEPTO
       item: '',// usado para obtener el id del item seleccionado (flatlist)
+      textBuscar: ''
     }
   }
   componentDidMount() {
@@ -51,10 +52,21 @@ class listaPrestamos extends Component {
             } else console.error('Faltan datos para poder llenar el componente')
             temp[i] = { ...item, Id }
           }
-          this.setState({ FlatListItems: temp, refreshing: false });
+          this.setState({ FlatListItems: temp, TempFlatListItems: temp, refreshing: false });
         }, this.errorDB)
     })
   };
+  filtrarAlBuscar() {
+    const filtro = this.state.textBuscar;
+    console.log('esta aqui', filtro)
+    this.setState({ refreshing: true });
+    if (this.state.textBuscar === '') {
+      this.setState({ TempFlatListItems: this.state.FlatListItems, refreshing: false });
+    } else {
+      let newTempArray = this.state.FlatListItems.filter(i => i.Nombre.includes(filtro))
+      this.setState({ TempFlatListItems: newTempArray, refreshing: false });
+    }
+  }
   errorDB(error) {
     console.error(error)
   }
@@ -70,7 +82,9 @@ class listaPrestamos extends Component {
               }}
                 source={require('../../assets/images/search.png')}
               />
-              <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(545), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }} placeholderTextColor='#F0F0F0' placeholder='Buscar' />
+              <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(545), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }}
+                placeholderTextColor='#F0F0F0' placeholder='Buscar' onChangeText={(text) => { this.setState({ textBuscar: text }, this.filtrarAlBuscar) }}
+              />
             </View>
           </View>
           <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
@@ -98,7 +112,7 @@ class listaPrestamos extends Component {
           }
           style={{ backgroundColor: '#B2E9AB' }} ref='myFlatList'
           keyExtractor={item => `i${item.Id}`} refreshing={this.state.refreshing}
-          onRefresh={this.UpdateList} data={this.state.FlatListItems}
+          onRefresh={this.UpdateList} data={this.state.TempFlatListItems}
           renderItem={this.renderItemComponent.bind(this)}
         />
         <TouchableOpacity onPress={this.openDrawer.bind(this)} style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} >
