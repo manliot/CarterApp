@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image, ActivityIndicator } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler';
 import { Container, Header } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
@@ -76,7 +76,7 @@ class listaPrestamos extends Component {
     return (
       <Container>
         <Header style={styles.header}>
-          <View style={{ width: Dimensions.get('window').width - 63, alignItems: 'flex-start' }}>
+          <View style={{ width: Dimensions.get('window').width - 63, flexDirection: 'row', justifyContent: 'center' }}>
             <View style={styles.search}>
               <Image style={{
                 height: pixelConverter(40), width: pixelConverter(40),
@@ -84,11 +84,24 @@ class listaPrestamos extends Component {
               }}
                 source={require('../../assets/images/search.png')}
               />
-              <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(545), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }}
+              <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(450), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }}
                 placeholderTextColor='#F0F0F0' placeholder='Buscar' onChangeText={(text) => { this.setState({ textBuscar: text }, this.filtrarAlBuscar) }}
               />
             </View>
           </View>
+          <TouchableOpacity style={{
+            position: 'absolute', top: pixelConverter(30), left: pixelConverter(10)
+          }}><Image source={require('../../assets/images/more.png')}
+            style={{
+              height: pixelConverter(50), width: pixelConverter(50),
+            }}
+            /></TouchableOpacity>
+          <TouchableOpacity style={{ marginRight: pixelConverter(20), position: 'absolute', top: pixelConverter(30), left: pixelConverter(60) }}>
+            <Image source={require('../../assets/images/sort.png')}
+              style={{
+                height: pixelConverter(50), width: pixelConverter(50),
+              }}
+            /></TouchableOpacity>
           <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
         </Header>
         <FlatList
@@ -192,7 +205,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingStart: pixelConverter(14),
-    width: pixelConverter(545),// si se cambia entonces cambiar en el gettConceptoview
+    width: pixelConverter(470),// si se cambia entonces cambiar en el gettConceptoview
     backgroundColor: '#a7a9a3',
     height: pixelConverter(70),
     borderRadius: pixelConverter(10),
