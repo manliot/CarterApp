@@ -19,7 +19,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 
 //components
-import Login from './src/Componentes/LoginView'
+import Login from './src/Componentes/Login'
 import Register_Component from './src/Componentes/Register_Component'
 import NewPrestamo_o_Deuda from './src/Componentes/NewPrestamo_o_Deuda'
 import Componente_Lista from './src/Componentes/Componente_Lista'

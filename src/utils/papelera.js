@@ -43,4 +43,27 @@ let text = `${texVect[0]}/${texVect[1]}/${texVect[2]}`
 texVec[i] = { text, Id }
 
 console.log(texVec[i])
-    //texVec.map((i) => this.cambiarfechas(i.text, i.Id))
+//texVec.map((i) => this.cambiarfechas(i.text, i.Id))
+
+borrar() {// to delete a user //npt necesary
+    this.props.db.transaction(tx => {
+        tx.executeSql('DELETE FROM  DebenList WHERE Usuario=?', ['Admin'],
+            (tx, res) => {
+                for (let i = 0; i < res.rows.length; i++) {
+                    console.log(i + '): ' + res.rows.item(i).Nombre)
+                }
+            }
+        )
+    })
+}
+Mostrarlista() {//to see all the users //npt necesary
+    this.props.db.transaction(tx => {
+        tx.executeSql('SELECT * FROM  Usuario ', [],
+            (tx, res) => {
+                for (let i = 0; i < res.rows.length; i++) {
+                    console.log(i + '): ' + res.rows.item(i).Usuario)
+                }
+            }
+        )
+    })
+}

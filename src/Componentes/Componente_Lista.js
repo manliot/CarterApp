@@ -47,7 +47,7 @@ class listaPrestamos extends Component {
   }
   getLista = () => {
     // se llena el flatlistItem con el resultado del query
-    console.log(this.state.campo)
+    // console.log(this.state.campo)
     this.props.db.transaction(tx => {
       tx.executeSql(`SELECT * FROM ${this.props.TypeList} WHERE Usuario=? ORDER BY "${this.state.campo}" ${this.state.sort}`,
         [this.props.usuario],
@@ -114,7 +114,6 @@ class listaPrestamos extends Component {
   render() {
     return (
       <MenuProvider>
-
         <Container>
           <Header style={styles.header}>
             <View style={{ width: Dimensions.get('window').width - 63, flexDirection: 'row', justifyContent: 'center' }}>
@@ -155,7 +154,7 @@ class listaPrestamos extends Component {
               <View>
                 <NavigationEvents
                   onWillFocus={payload => {
-                    console.log(this.props.refreshPrestamos, this.props.refreshDeudas)
+                    //console.log(this.props.refreshPrestamos, this.props.refreshDeudas)
                     if (this.props.TypeList === 'DebenList' & this.props.refreshPrestamos) {
                       this.setState({ refreshing: true }, () => {
                         this.props.RefreshPrestamoFalse()
@@ -223,7 +222,7 @@ class listaPrestamos extends Component {
       </View>
     )
   };
-  UpdateList = () => {
+  UpdateList = (num) => {
     this.setState({ refreshing: true, }, () => {
       Fecha = ''
       this.getLista()
