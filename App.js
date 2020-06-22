@@ -21,7 +21,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 //components
 import Login from './src/Componentes/Login'
 import Register from './src/Componentes/Singin'
-import NewPrestamo_o_Deuda from './src/Componentes/NewPrestamo_o_Deuda'
+import NewPrestamo_o_Deuda from './src/Componentes/Prestamo_Deuda_New'
 import Componente_Lista from './src/Componentes/Componente_Lista'
 import Cartera from './src/Componentes/Cartera'
 import MasDetalesItem from './src/Componentes/masDetalesItem'
