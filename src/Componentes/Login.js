@@ -43,7 +43,7 @@ const TemLogin = ({ route, navigation }) => {
             ============================================================================*/
             dispatch(SetInfoUser(row.item(0).Nombre, row.item(0).Usuario))
             Alert.alert(
-              `Bienvenido ${nombre}!`,
+              `Bienvenido ${row.item(0).Nombre}!`,
               'Has ingresado satifactoriamente',
               [
                 { text: 'Vamos!', onPress: () => navigation.navigate('Home') },

@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 15,
         color: 'black',
-        position: 'relative',
         top: -75,
         color: 'gray',
     },

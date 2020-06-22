@@ -87,8 +87,8 @@ export default function Singin({ route, navigation }) {
   }
   return (
     <View style={stylesRegister.container} >
-      <Image style={[stylesLogin.fondo, { position: 'absolute', top: 0, height: '80%', width: '100%' }]} imageStyle={{ resizeMode: 'center', height: '25%', width: '100%' }} source={require('../../assets/images/FONDO.png')} />
-      <ScrollView style={[{ width: '100%', position: 'absolute', top: 0 }]}>
+      <Image style={[stylesLogin.fondo, { position: 'absolute', top: 0, width: '100%' }]} imageStyle={{ resizeMode: 'center', height: '25%', width: '100%' }} source={require('../../assets/images/FONDO.png')} />
+      <ScrollView style={[{ width: '100%' }]}>
         <Container style={{ backgroundColor: 'transparent', justifyContent: "center" }}>
           <View style={[stylesLogin.box, { marginTop: 0 }]}>
             <Image style={{ height: 80, width: 80, position: 'relative', top: -70, borderRadius: 50 }} source={require('../../assets/images/userReg.png')} />
