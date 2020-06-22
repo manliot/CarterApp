@@ -20,7 +20,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 //components
 import Login from './src/Componentes/Login'
-import Register_Component from './src/Componentes/Register_Component'
+import Register from './src/Componentes/Singin'
 import NewPrestamo_o_Deuda from './src/Componentes/NewPrestamo_o_Deuda'
 import Componente_Lista from './src/Componentes/Componente_Lista'
 import Cartera from './src/Componentes/Cartera'
@@ -186,7 +186,7 @@ const AppStackNavigator1 = createStackNavigator({
 
   },
   RegisterUser: {
-    screen: Register_Component,
+    screen: Register,
     navigationOptions: {
       title: '',
       headerStyle: { backgroundColor: '#5173FF' },

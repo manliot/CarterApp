@@ -68,25 +68,23 @@ const TemLogin = ({ route, navigation }) => {
     <Content>
       <ScrollView  >
         <Container >
-          <ImageBackground style={styles.fondo} imageStyle={{ resizeMode: 'cover', height: '70%' }} source={require('../../assets/images/FONDO.png')} >
-            <View style={styles.container}>
-              {/* <Text style={styles.title}>Caplist</Text> */}
-              <Image style={{ height: 120, width: 265, backgroundColor: 'transparent', marginLeft: ((Dimensions.get('window').width) - 265) / 2 }} source={require('../../assets/images/logo_Login.png')} />
-              {/*  onChangeText: update the state with the text in the textInput*/}
-              <View style={styles.box}>
-                <Image style={{ height: 80, width: 80, position: 'relative', top: -70, borderRadius: 50 }} source={require('../../assets/images/user.png')} />
-                <Text style={styles.textForm}>Ingresa</Text>
-                <TextInput style={styles.textInput} placeholderTextColor='grey' placeholder='Usuario' onChangeText={text => setusuario(text)} onSubmitEditing={(event) => { contraseña_ref.current.focus(); }} />
-                <TextInput secureTextEntry={true} style={styles.textInput} placeholderTextColor='grey' placeholder='Contraseña' onChangeText={text => setcontraseña(text)} ref={contraseña_ref} onSubmitEditing={onPressLoginButton} />
-                <TouchableHighlight onPress={onPressLoginButton} style={styles.button}>
-                  <Text style={{ color: 'white' }}> Log in </Text>
-                </TouchableHighlight>
-                <TouchableWithoutFeedback onPress={onPressRegisterButton} style={styles.buttonRegister}>
-                  <Text style={styles.textButton}>No estas Registrado? Click aqui</Text>
-                </TouchableWithoutFeedback>
-              </View>
+          <Image style={styles.fondo} imageStyle={{ resizeMode: 'center' }} source={require('../../assets/images/FONDO.png')} />
+          <View style={styles.container}>
+            <Image style={{ height: 120, width: 265, backgroundColor: 'transparent', marginLeft: ((Dimensions.get('window').width) - 265) / 2 }} source={require('../../assets/images/logo_Login.png')} />
+            <View style={styles.box}>
+              <Image style={{ height: 80, width: 80, top: -70, borderRadius: 50 }} source={require('../../assets/images/user.png')} />
+              <Text style={styles.textForm}>Ingresa</Text>
+              <TextInput style={styles.textInput} placeholderTextColor='grey' placeholder='Usuario' onChangeText={text => setusuario(text)} onSubmitEditing={(event) => { contraseña_ref.current.focus(); }} />
+              <TextInput secureTextEntry={true} style={styles.textInput} placeholderTextColor='grey' placeholder='Contraseña' onChangeText={text => setcontraseña(text)} ref={contraseña_ref} onSubmitEditing={onPressLoginButton} />
+              <TouchableHighlight onPress={onPressLoginButton} style={styles.button}>
+                <Text style={{ color: 'white' }}> Log in </Text>
+              </TouchableHighlight>
+              <TouchableWithoutFeedback onPress={onPressRegisterButton} style={styles.buttonRegister}>
+                <Text style={styles.textButton}>No estas Registrado? Click aqui</Text>
+              </TouchableWithoutFeedback>
             </View>
-          </ImageBackground>
+          </View>
+          {/*  </ImageBackground> */}
         </Container>
       </ScrollView>
     </Content>
