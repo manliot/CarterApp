@@ -100,17 +100,14 @@ class MasDetalesItem extends Component {
     this.props.db.transaction(tx => {
       tx.executeSql(query, [this.item.Id], (tx, res) => {
         if (res.rowsAffected > 0) {
-          console.log('vamos')
           actualizar(`SELECT Monto FROM ${TypeList} WHERE Usuario =?`, this.props.usuario, this.props.db)
             .then((res) => {
               if (TypeList === 'DeboList') {
                 this.props.RefreshDeudasTrue()
                 this.props.UpdateDEBES_(res)
-                console.log('rese')
               } else {
                 this.props.RefreshPrestamoTrue()
                 this.props.UpdateDEBEN_(res)
-                console.log('rese')
               }
               this.props.RefreshTrue()
               //this.props.navigation.navigate('Home')

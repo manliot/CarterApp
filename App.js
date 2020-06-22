@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducer from './src/Reducers'
+import { MenuProvider } from 'react-native-popup-menu';
 
 //VectorIcons
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -206,8 +207,10 @@ export default class App extends Component {
     return (
       <Root>
         <Provider store={store}>
-          <AppContainer manli='soy el mapa'>
-          </AppContainer>
+          <MenuProvider>
+            <AppContainer manli='soy el mapa'>
+            </AppContainer>
+          </MenuProvider>
         </Provider>
       </Root>
 

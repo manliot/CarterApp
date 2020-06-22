@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image }
 import { TextInput } from 'react-native-gesture-handler';
 import { Container, Header } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
-import { MenuProvider } from 'react-native-popup-menu';
+
 import {
   Menu,
   MenuOptions,
@@ -113,74 +113,72 @@ class listaPrestamos extends Component {
   }
   render() {
     return (
-      <MenuProvider>
-        <Container>
-          <Header style={styles.header}>
-            <View style={{ width: Dimensions.get('window').width - 63, flexDirection: 'row', justifyContent: 'center' }}>
-              <View style={styles.search}>
-                <Image style={{ height: pixelConverter(40), width: pixelConverter(40), left: pixelConverter(25), }}
-                  source={require('../../assets/images/search.png')} />
-                <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(450), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }}
-                  placeholderTextColor='#F0F0F0' placeholder='Buscar' onChangeText={(text) => { this.setState({ textBuscar: text }, this.filtrarAlBuscar) }} />
-              </View>
+      <Container>
+        <Header style={styles.header}>
+          <View style={{ width: Dimensions.get('window').width - 63, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={styles.search}>
+              <Image style={{ height: pixelConverter(40), width: pixelConverter(40), left: pixelConverter(25), }}
+                source={require('../../assets/images/search.png')} />
+              <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(450), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }}
+                placeholderTextColor='#F0F0F0' placeholder='Buscar' onChangeText={(text) => { this.setState({ textBuscar: text }, this.filtrarAlBuscar) }} />
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                this.orderBy.bind(this);
-              }}
-              style={{ position: 'absolute', top: pixelConverter(30), left: pixelConverter(10) }}>
-              <Menu>
-                <MenuTrigger text='' >
-                  <Image source={require('../../assets/images/more.png')}
-                    style={{ height: pixelConverter(50), width: pixelConverter(50), }} />
-                </MenuTrigger>
-                <MenuOptions>
-                  <MenuOption onSelect={() => this.orderBy(0)} text='Ordenar Por Fecha' />
-                  <MenuOption onSelect={() => this.orderBy(1)} text='Ordenar Por Nombre' />
-                  <MenuOption onSelect={() => this.orderBy(2)} text='Ordenar Por Valor' />
-                </MenuOptions>
-              </Menu>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.sort.bind(this)}
-              style={{ marginRight: pixelConverter(20), position: 'absolute', top: pixelConverter(30), left: pixelConverter(60) }}>
-              <Image source={require('../../assets/images/sort.png')}
-                style={{ height: pixelConverter(50), width: pixelConverter(50), }}
-              /></TouchableOpacity>
-            <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
-          </Header>
-          <FlatList
-            ListHeaderComponent={
-              <View>
-                <NavigationEvents
-                  onWillFocus={payload => {
-                    //console.log(this.props.refreshPrestamos, this.props.refreshDeudas)
-                    if (this.props.TypeList === 'DebenList' & this.props.refreshPrestamos) {
-                      this.setState({ refreshing: true }, () => {
-                        this.props.RefreshPrestamoFalse()
-                        this.getLista()
-                      })
-                    } else if (this.props.TypeList === 'DeboList' & this.props.refreshDeudas) {
-                      this.setState({ refreshing: true }, () => {
-                        this.props.RefreshDeudasFalse()
-                        this.getLista()
-                      })
-                    }
-                  }}
-                />
-              </View>
-            }
-            style={{ backgroundColor: '#B2E9AB' }} ref='myFlatList'
-            keyExtractor={item => `i${item.Id}`} refreshing={this.state.refreshing}
-            onRefresh={this.UpdateList} data={this.state.TempFlatListItems}
-            renderItem={this.renderItemComponent.bind(this)}
-            ListEmptyComponent={this.sorryPage}
-          />
-          <TouchableOpacity onPress={this.openDrawer.bind(this)} style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} >
-            <Image style={{ height: pixelConverter(120), width: pixelConverter(120), }} source={require('../../assets/images/plus.png')}></Image>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              this.orderBy.bind(this);
+            }}
+            style={{ position: 'absolute', top: pixelConverter(30), left: pixelConverter(10) }}>
+            <Menu>
+              <MenuTrigger text='' >
+                <Image source={require('../../assets/images/more.png')}
+                  style={{ height: pixelConverter(50), width: pixelConverter(50), }} />
+              </MenuTrigger>
+              <MenuOptions>
+                <MenuOption onSelect={() => this.orderBy(0)} text='Ordenar Por Fecha' />
+                <MenuOption onSelect={() => this.orderBy(1)} text='Ordenar Por Nombre' />
+                <MenuOption onSelect={() => this.orderBy(2)} text='Ordenar Por Valor' />
+              </MenuOptions>
+            </Menu>
           </TouchableOpacity>
-        </Container >
-      </MenuProvider>
+          <TouchableOpacity
+            onPress={this.sort.bind(this)}
+            style={{ marginRight: pixelConverter(20), position: 'absolute', top: pixelConverter(30), left: pixelConverter(60) }}>
+            <Image source={require('../../assets/images/sort.png')}
+              style={{ height: pixelConverter(50), width: pixelConverter(50), }}
+            /></TouchableOpacity>
+          <Image onPress={() => { this.props.navigation.openDrawer() }} style={{ borderRadius: pixelConverter(100), height: pixelConverter(88), width: pixelConverter(88), position: 'absolute', top: pixelConverter(7), right: pixelConverter(20) }} source={require('../../assets/images/userlista.png')}></Image>
+        </Header>
+        <FlatList
+          ListHeaderComponent={
+            <View>
+              <NavigationEvents
+                onWillFocus={payload => {
+                  //console.log(this.props.refreshPrestamos, this.props.refreshDeudas)
+                  if (this.props.TypeList === 'DebenList' & this.props.refreshPrestamos) {
+                    this.setState({ refreshing: true }, () => {
+                      this.props.RefreshPrestamoFalse()
+                      this.getLista()
+                    })
+                  } else if (this.props.TypeList === 'DeboList' & this.props.refreshDeudas) {
+                    this.setState({ refreshing: true }, () => {
+                      this.props.RefreshDeudasFalse()
+                      this.getLista()
+                    })
+                  }
+                }}
+              />
+            </View>
+          }
+          style={{ backgroundColor: '#B2E9AB' }} ref='myFlatList'
+          keyExtractor={item => `i${item.Id}`} refreshing={this.state.refreshing}
+          onRefresh={this.UpdateList} data={this.state.TempFlatListItems}
+          renderItem={this.renderItemComponent.bind(this)}
+          ListEmptyComponent={this.sorryPage}
+        />
+        <TouchableOpacity onPress={this.openDrawer.bind(this)} style={{ elevation: 10, width: '100%', borderRadius: pixelConverter(100), height: pixelConverter(120), width: pixelConverter(120), marginTop: pixelConverter(-132), position: 'absolute', right: pixelConverter(30), bottom: pixelConverter(25) }} >
+          <Image style={{ height: pixelConverter(120), width: pixelConverter(120), }} source={require('../../assets/images/plus.png')}></Image>
+        </TouchableOpacity>
+      </Container >
     );
   }
   sorryPage() {
@@ -206,7 +204,7 @@ class listaPrestamos extends Component {
     return (//View de los items del FlatList
       <View style={styles.container_lista} >
         {!igualFecha && (
-          <Text style={styles.fecha}>• • {Moment(new Date(item.Fecha)).format("DD MMM [de] YYYY")} • •</Text>
+          <Text style={styles.fecha}>• • {Moment(new Date(item.Fecha)).format("DD MMM [de] YYYY")} {item.Fecha} • •</Text>
         )}
         <TouchableOpacity style={styles.touchableOpacity} onPress={() => { this.GoDetails(item) }} >
           <View style={styles.lista} >
