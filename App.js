@@ -25,7 +25,7 @@ import NewPrestamo_o_Deuda from './src/Componentes/NewPrestamo_o_Deuda'
 import Componente_Lista from './src/Componentes/Componente_Lista'
 import Cartera from './src/Componentes/Cartera'
 import MasDetalesItem from './src/Componentes/masDetalesItem'
-import NewPricipal from './src/Componentes/NewPricipal'
+import Principal from './src/Componentes/Principal'
 
 
 /*============================================================
@@ -60,8 +60,8 @@ const AppTabNavigator = createBottomTabNavigator({
       )
     },
   },
-  cartera: {
-    screen: NewPricipal,
+  Principal: {
+    screen: Principal,
     navigationOptions: {
       headerShown: false,
       tabBarIcon: ({ tintColor }) => (
@@ -89,7 +89,7 @@ const AppTabNavigator = createBottomTabNavigator({
       headerStyle: { backgroundColor: '#5173FF' },
       headerTintColor: '#ffffff',
     }
-  }, initialRouteName: 'cartera'
+  }, initialRouteName: 'Principal'
 })
 const AppStackNavigator = createStackNavigator({
   AppTabNavigtator: {
