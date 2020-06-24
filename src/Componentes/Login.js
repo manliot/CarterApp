@@ -1,6 +1,6 @@
 //Imports Components
 import React, { useState, useRef } from 'react'
-import { ImageBackground, View, Text, Image, TouchableWithoutFeedback, TouchableHighlight, Alert, TextInput, ScrollView, Dimensions } from 'react-native'
+import { View, Text, Image, TouchableWithoutFeedback, TouchableHighlight, Alert, TextInput, ScrollView, Dimensions } from 'react-native'
 import { Container, Content } from 'native-base'
 import { useSelector, useDispatch } from 'react-redux'
 
