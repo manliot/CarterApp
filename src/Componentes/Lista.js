@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, Dimensions, Image } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler';
 import { Container, Header } from 'native-base'
 import { NavigationEvents } from 'react-navigation';
 
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
-import Cartera from './Cartera'
 
 import Moment from 'moment';
 import 'intl';
@@ -17,8 +16,10 @@ import { RefreshDeudasFalse, RefreshPrestamoFalse } from '../actions/actions'
 
 import pixelConverter from '../utils/dimxPixels'
 
+const styles = require('../Styles/lista')
 //sera usada para agrupar las box 
 let Fecha
+let refrescando = false
 //
 let funcion = ''
 //formateo del monto formato estadounidense
@@ -27,13 +28,9 @@ export default function Lista(props) {
   //state
   let [FlatListItems, setFlatListItems] = useState([])
   let [TempFlatListItems, setTempFlatListItems] = useState([])
-  let [refreshing, setrefreshing] = useState(false)
-  let [expandir, setExpandir] = useState(false)
   let [item, setItem] = useState('')
-  let [textBuscar, setTextBuscar] = useState('')
   let [sort, setSort] = useState('ASC')
   let [campo, setCampo] = useState('Fecha')
-
   //globalState
   const db = useSelector(state => state.db)
   const usuario = useSelector(state => state.usuario)
@@ -43,49 +40,12 @@ export default function Lista(props) {
   const dispatch = useDispatch()
   //useEfect
   useEffect(() => {
-    if (refreshing === true) {
-      console.log('<<<<<<<<<<<<<<<<1')
-      /* Fecha = ''
-      setrefreshing(false)
-      getLista() */
-
-    }
-  }, [refreshing])
-  useEffect(() => {
-    console.log('2')
-    UpdateList()
-  }, [campo])
-  useEffect(() => {
-    console.log('3')
-    Fecha = ''
     getLista()
-  }, [sort])
-  /*  useEffect(() => {
-     console.log('10')
-     if (refreshing == true) {
-       if (funcion != 'filtrar') {
-         Fecha = ''
-         getLista()
- 
-       }
-     }
-   }, [refreshing]) */
-  useEffect(() => {
-    console.log('4')
-    if (refreshing == true) {
-      if (refreshDeudas) {
-        dispatch(RefreshDeudasFalse())
-      } else if (refreshPrestamos) {
-        dispatch(RefreshPrestamoFalse())
-      }
-    }
-  }, [refreshDeudas, refreshPrestamos])
-  useEffect(() => {
-    filtrarAlBuscar()
-  }, [textBuscar])
+  }, [campo, sort])
   //methods
   const getLista = () => {
     // se llena el flatlistItem con el resultado del query
+    Fecha = ''
     db.transaction(tx => {
       tx.executeSql(`SELECT * FROM ${props.TypeList} WHERE Usuario=? ORDER BY "${campo}" ${sort}`,
         [usuario],
@@ -101,25 +61,24 @@ export default function Lista(props) {
             } else console.error('Faltan datos para poder llenar el componente')
             temp[i] = { ...item, Id }
           }
-          setFlatListItems(temp); setTempFlatListItems(temp); setrefreshing(false)
+          refrescando = false
+          setFlatListItems(temp); setTempFlatListItems(temp);
         }, errorDB)
     })
   };
   const errorDB = (error) => {
     console.error(error)
   }
-  const filtrarAlBuscar = () => {
-    funcion = 'filtrar'
-    setrefreshing(true)
+  const filtrarAlBuscar = (textBuscar) => {
     if (textBuscar === '') {
-      setTempFlatListItems(FlatListItems); setrefreshing(false)
+      setTempFlatListItems(FlatListItems)
     } else {
-      const filtro = textBuscar;
-      let newTempArray = FlatListItems.filter(i => i.Nombre.includes(filtro))
-      setTempFlatListItems(newTempArray); setrefreshing(false)
+      let newTempArray = FlatListItems.filter(i => i.Nombre.includes(textBuscar))
+      setTempFlatListItems(newTempArray)
     }
   }
   const orderBy = (num) => {
+    refrescando = true
     switch (num) {
       case 0:
         setCampo('Fecha')
@@ -136,19 +95,16 @@ export default function Lista(props) {
     }
   }
   const sortFunction = () => {
+    Fecha = ''
     if (sort === 'ASC') {
       setSort('DESC')
-      setrefreshing(true)
+      refrescando = true
     } else if ((sort === 'DESC')) {
       setSort('ASC')
-      setrefreshing(true)
+      refrescando = true
     } else {
       console.error(new Error('ASC/DESC'))
     }
-  }
-  const disableTextMenuItem = (itemText) => {
-    if (itemText == campo) true
-    return true
   }
   const ImagePage = () => {
     //      <Image style={{ height: 600, width: 370 }} source={require('../../assets/images/bienvenidoPage.png')}></Image>
@@ -159,7 +115,7 @@ export default function Lista(props) {
   const openDrawer = () => {
     props.navigation.openDrawer()
   }
-  renderItemComponent = (itemObject) => {
+  const renderItemComponent = (itemObject) => {
     const { item } = itemObject
     let igualFecha = true
     if (item.Fecha != Fecha) {
@@ -186,8 +142,8 @@ export default function Lista(props) {
     )
   };
   const UpdateList = (num) => {
-    funcion = 'update'
-    setrefreshing(true)
+    refrescando = true
+    getLista()
   }
   const GoDetails = (item) => {
     setItem('')
@@ -201,11 +157,10 @@ export default function Lista(props) {
             <Image style={{ height: pixelConverter(40), width: pixelConverter(40), left: pixelConverter(25) }}
               source={require('../../assets/images/search.png')} />
             <TextInput style={{ position: 'relative', color: '#F0F0F0', left: -pixelConverter(30), height: pixelConverter(70), width: pixelConverter(450), paddingBottom: pixelConverter(17), paddingStart: pixelConverter(65), fontSize: pixelConverter(30) }}
-              placeholderTextColor='#F0F0F0' placeholder='Buscar' onChangeText={text => setTextBuscar(text)} />
+              placeholderTextColor='#F0F0F0' placeholder='Buscar' onChangeText={text => filtrarAlBuscar(text)} />
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => { orderBy }}
           style={{ position: 'absolute', top: pixelConverter(30), left: pixelConverter(10) }}>
           <Menu>
             <MenuTrigger text='' >
@@ -233,15 +188,19 @@ export default function Lista(props) {
             <NavigationEvents
               onWillFocus={payload => {
                 console.log(refreshPrestamos, refreshDeudas)
-                if (props.TypeList === 'DebenList' || props.TypeList === 'DeboList') {
-                  setrefreshing(true)
+                if (props.TypeList === 'DebenList' & refreshPrestamos) {
+                  dispatch(RefreshPrestamoFalse())
+                  refrescando = true
+                } else if (props.TypeList === 'DeboList' & refreshDeudas) {
+                  dispatch(RefreshDeudasFalse())
+                  refrescando = true
                 }
               }}
             />
           </View>
         }
         style={{ backgroundColor: '#B2E9AB' }}
-        keyExtractor={item => `i${item.Id}`} refreshing={refreshing}
+        keyExtractor={item => `i${item.Id}`} refreshing={refrescando}
         onRefresh={UpdateList} data={TempFlatListItems}
         renderItem={renderItemComponent}
         ListEmptyComponent={ImagePage}
@@ -252,88 +211,3 @@ export default function Lista(props) {
     </Container >
   )
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: 'blue'
-  },
-  header: {
-    backgroundColor: '#B2E9AB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 0
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-  search: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingStart: pixelConverter(14),
-    width: pixelConverter(470),// si se cambia entonces cambiar en el gettConceptoview
-    backgroundColor: '#a7a9a3',
-    height: pixelConverter(70),
-    borderRadius: pixelConverter(10),
-  },
-  fecha: {
-    marginTop: pixelConverter(50),
-    marginBottom: pixelConverter(10),
-    color: '#959595',
-    fontSize: pixelConverter(28),
-  },
-  touchableOpacity: {
-    padding: pixelConverter(0),
-    borderRadius: pixelConverter(10),
-  },
-  lista: {
-    marginTop: pixelConverter(27),
-    backgroundColor: '#ecfcff',
-    paddingTop: pixelConverter(25),
-    paddingBottom: pixelConverter(20),
-    paddingEnd: pixelConverter(18),
-    paddingStart: pixelConverter(27),
-    width: Dimensions.get('window').width - 65,// si se cambia entonces cambiar en el gettConceptoview
-    height: pixelConverter(120),
-    borderRadius: pixelConverter(10),
-    elevation: 5,
-  },
-  top: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start'
-  },
-  bottom: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start'
-  },
-  container_lista: {
-    alignItems: 'center'
-  },
-  tex: {
-    fontSize: pixelConverter(31),
-    color: '#65D359',
-    fontFamily: 'Roboto-Bold'
-  },
-  tex2: {
-    color: '#6F6C6C',
-    fontSize: pixelConverter(27),
-  },
-  tex3: {
-    fontSize: 16,
-    alignItems: 'flex-end',
-    fontFamily: 'Roboto-Bold',
-    flex: 1,
-    textAlign: 'right'
-  },
-})

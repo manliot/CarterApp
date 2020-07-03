@@ -13,16 +13,16 @@ const db = openDatabase({
 )
 
 const initialState = {
-    db: db,
-    nombre: 'defecto',
-    usuario: '',
-    ultimaVez: '4/1/2020',
-    debenT: 0,
-    debesT: 0,
-    cartera: 0,
-    refresh: false,
-    refreshPrestamos: false,
-    refreshDeudas: false,
+    db: db,//base de datos
+    nombre: 'defecto',//nombre del usuario logeado
+    usuario: '',// usuario logeado
+    ultimaVez: '4/1/2020',//fecha ultimo login <- sacado de db
+    debenT: 0,//total deben
+    debesT: 0,//total debes
+    cartera: 0,//total en cartera
+    refresh: false,//true si debo refrescar el principal
+    refreshPrestamos: true,//true si debo refrescar el la lista de prestamos
+    refreshDeudas: true,//true si debo refrescar el la lista de deudas
 }
 const reducerInfoGeneral = (state = initialState, action) => {
     switch (action.type) {
