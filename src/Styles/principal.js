@@ -4,7 +4,6 @@ const styles = StyleSheet.create({
     container: {
         height: '100%',
         width: '100%',
-        backgroundColor: 'blue'
     },
     header: {
         height: pixelConverter(385),
@@ -12,12 +11,15 @@ const styles = StyleSheet.create({
         color: 'white',
         alignItems: 'center'
     },
-    nombre_box: {
-        textAlign: 'right',
-        marginRight: pixelConverter(34),
-        color: '#998787',
-        fontSize: pixelConverter(30),
-        fontFamily: 'Roboto-Regular'
+    ViewDraw: {
+        width: '100%',
+        alignItems: 'flex-end'
+    },
+    icon_drawMenu: {
+        height: pixelConverter(88),
+        width: pixelConverter(88),
+        marginRight: 5,
+        marginTop: 2.5,
     },
     text_saludo: {
         top: pixelConverter(95),
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
         width: pixelConverter(529),
         color: 'white',
         fontSize: pixelConverter(50),
-        fontFamily: 'Roboto-Regular'
+        fontFamily: 'Roboto-Regular',
     },
     text_resumen: {
         top: pixelConverter(159),
@@ -36,21 +38,28 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular'
     },
     body: {
-        height: '100%',
-        backgroundColor: 'white',
+        flex: 1,
+        backgroundColor: '#ffffff',
         alignItems: 'center',
         width: '100%'
     },
     box: {
         backgroundColor: '#fff',
-        borderRadius: 8,
         elevation: 5,
         marginTop: -pixelConverter(138),
-        height: '70%',
+        flex: 0.9,
         borderRadius: pixelConverter(32),
         width: pixelConverter(529),
         paddingStart: pixelConverter(55),
-        paddingTop: pixelConverter(46)
+        paddingTop: pixelConverter(46),
+        paddingBottom: pixelConverter(46)
+    },
+    nombre_box: {
+        textAlign: 'right',
+        marginRight: pixelConverter(34),
+        color: '#998787',
+        fontSize: pixelConverter(30),
+        fontFamily: 'Roboto-Regular'
     },
     tex_deben_debes: {
         marginTop: pixelConverter(55),
@@ -70,8 +79,16 @@ const styles = StyleSheet.create({
         fontSize: pixelConverter(30),
         fontWeight: 'bold',
         fontFamily: 'Roboto-Bold'
+    },
+    FABbutton: {
+        flex: 0.1,
+        position: 'absolute',
+        elevation: 10,
+        borderRadius: pixelConverter(100),
+        height: pixelConverter(120),
+        width: pixelConverter(120),
+        right: pixelConverter(30),
+        bottom: pixelConverter(20)
     }
-
 })
-
 module.exports = styles;
