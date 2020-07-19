@@ -23,6 +23,7 @@ export default function Singin({ route, navigation }) {
 
   //Dispach
   const db = useSelector(state => state.db)
+  const db2 = useSelector(state => state.db2)
   //methods
   const vaciarFormulario = () => {// vacia el formulario
     name_ref.value = ''
@@ -31,6 +32,79 @@ export default function Singin({ route, navigation }) {
     username_ref.value = ''
     password_ref.value = ''
   }
+ /*  const onPressRegisterButton = () => {//realiza un query a la base de datos para añadir un nuevo usuario.
+    if (Name == '' || LastName == '' || Age == '' || UserName == '' || Password == '') {
+      Toast.show(
+        {
+          text: 'Por favor, Complete toda la informacion',
+          buttonText: 'Ok', position: 'bottom',
+          type: "warning", onClose: () => { console.log('') },
+          duration: 30000,
+        }
+      )
+    } else {
+      if (!isNaN(Age)) {
+        vaciarFormulario()
+        db2.collection("Usuario").add({
+          Usuario: UserName,
+          Contraseña: Password,
+          Nombre: Name,
+          Apellido: LastName,
+          Edad: parseInt(Age)
+        })
+          .then((mes) => {
+            Toast.show(
+              {
+                text: 'Fuiste registrado satifactoriamente en cloud',
+                buttonText: 'Ok', position: 'bottom',
+                type: "success", onClose: () => { navigation.goBack() },
+                duration: 30000,
+              }
+            )
+            console.log(mes)
+          })
+          .catch((err) => console.error(new Error(err)))
+        /*         db.transaction(tx => {
+                  tx.executeSql(
+                    'INSERT INTO Usuario (Usuario, Contraseña, Nombre, Apellido, Edad) VALUES (?,?,?,?,?)',
+                    [UserName, Password, Name, LastName, Age],
+                    (tx, res) => {
+                      if (res.rowsAffected > 0) {
+                        Toast.show(
+                          {
+                            text: 'Fuiste registrado satifactoriamente',
+                            buttonText: 'Ok', position: 'bottom',
+                            type: "success", onClose: () => { navigation.goBack() },
+                            duration: 30000,
+                          }
+                        )
+                      } else {
+                        Toast.show(
+                          {
+                            text: 'Error al registrarse, Vuela a intentar',
+                            buttonText: 'Okay', position: 'bottom',
+                            type: "danger", onClose: () => { console.log('') }
+                          }
+                        )
+                        alert('fallo al registrarse');
+                      }
+                    }
+                  )
+                }, () => {
+                  username_ref.value = ''
+                  Toast.show(
+                    {
+                      text: 'Este nombre de usuario ya fue escogido :c',
+                      buttonText: 'Okay', position: 'bottom',
+                      type: "danger", onClose: () => { console.log('pero que ha pasao') }
+                    }
+                  )
+                }); 
+      } else {
+        Alert.alert('', 'La edad tiene que ser un valor numerico')
+      }
+    }
+  } */
   const onPressRegisterButton = () => {//realiza un query a la base de datos para añadir un nuevo usuario.
     if (Name == '' || LastName == '' || Age == '' || UserName == '' || Password == '') {
       Toast.show(
@@ -110,3 +184,59 @@ export default function Singin({ route, navigation }) {
     </View >
   )
 }
+
+/* const onPressRegisterButton = () => {//realiza un query a la base de datos para añadir un nuevo usuario.
+  if (Name == '' || LastName == '' || Age == '' || UserName == '' || Password == '') {
+    Toast.show(
+      {
+        text: 'Por favor, Complete toda la informacion',
+        buttonText: 'Ok', position: 'bottom',
+        type: "warning", onClose: () => { console.log('') },
+        duration: 30000,
+      }
+    )
+  } else {
+    if (!isNaN(Age)) {
+      vaciarFormulario()
+      db.transaction(tx => {
+        tx.executeSql(
+          'INSERT INTO Usuario (Usuario, Contraseña, Nombre, Apellido, Edad) VALUES (?,?,?,?,?)',
+          [UserName, Password, Name, LastName, Age],
+          (tx, res) => {
+            if (res.rowsAffected > 0) {
+              Toast.show(
+                {
+                  text: 'Fuiste registrado satifactoriamente',
+                  buttonText: 'Ok', position: 'bottom',
+                  type: "success", onClose: () => { navigation.goBack() },
+                  duration: 30000,
+                }
+              )
+            } else {
+              Toast.show(
+                {
+                  text: 'Error al registrarse, Vuela a intentar',
+                  buttonText: 'Okay', position: 'bottom',
+                  type: "danger", onClose: () => { console.log('') }
+                }
+              )
+              alert('fallo al registrarse');
+            }
+          }
+        )
+      }, () => {
+        username_ref.value = ''
+        Toast.show(
+          {
+            text: 'Este nombre de usuario ya fue escogido :c',
+            buttonText: 'Okay', position: 'bottom',
+            type: "danger", onClose: () => { console.log('pero que ha pasao') }
+          }
+        )
+      });
+    } else {
+      Alert.alert('', 'La edad tiene que ser un valor numerico')
+    }
+  }
+}
+ */

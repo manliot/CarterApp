@@ -11,9 +11,11 @@ const db = openDatabase({
         console.log('errorMensaje', err.dbname)
     }
 )
-
+//cloud
+import db2 from '../../lib/firebase'
 const initialState = {
     db: db,//base de datos
+    db2:db2,
     nombre: 'defecto',//nombre del usuario logeado
     usuario: '',// usuario logeado
     ultimaVez: '4/1/2020',//fecha ultimo login <- sacado de db
