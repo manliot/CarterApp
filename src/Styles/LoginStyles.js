@@ -1,20 +1,16 @@
 import { StyleSheet, Dimensions } from 'react-native'
 
 const styles = StyleSheet.create({
-    fondo: {
-        position: 'absolute',
-    },
     container: {
         justifyContent: 'center',
         backgroundColor: 'transparent',
         height: '100%',
+        backgroundColor: '#65d359',
     },
-    title: {
-        fontSize: 50,
-        color: 'white',
-        fontFamily: 'LilitaOne-Regular',
-        textAlign: 'center',
-        marginTop: '30%'
+    img_logo: {
+        height: 120,
+        width: 265,
+        alignSelf: 'center'
     },
     box: {
         alignItems: 'center',
@@ -26,6 +22,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 8,
         elevation: 5,
+    },
+    img_logoUser: {
+        height: 80,
+        width: 80,
+        top: -70,
+        borderRadius: 50
     },
     textForm: {
         fontSize: 16,
